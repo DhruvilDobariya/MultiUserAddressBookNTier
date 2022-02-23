@@ -9,9 +9,9 @@ using System.Web;
 
 namespace AddressBook.ENT
 {
-    public class CountactCategoryENT : ContactCategoryENTBase
+    public class ContactCategoryENT : ContactCategoryENTBase
     {
-        public CountactCategoryENT()
+        public ContactCategoryENT()
         {
             //
             // TODO: Add constructor logic here

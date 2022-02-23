@@ -48,7 +48,7 @@ namespace AddressBook.ENT
         }
 
         protected SqlInt32 _UserID;
-        public SqlInt32 UserId
+        public SqlInt32 UserID
         {
             get { return _UserID; }
             set { _UserID = value; }

@@ -27,7 +27,7 @@ namespace AddressBook.ENT
         }
 
         protected SqlInt32 _ContactCategoryID;
-        public SqlInt32 CategoryCategoryId
+        public SqlInt32 ContactCategoryID
         {
             get { return _ContactCategoryID; }
             set { _ContactCategoryID = value; }

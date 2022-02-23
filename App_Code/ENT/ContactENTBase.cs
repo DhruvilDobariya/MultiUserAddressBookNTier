@@ -103,6 +103,13 @@ namespace AddressBook.ENT
             set { _LinkedinID = value; }
         }
 
+        protected SqlString _Address;
+        public SqlString Address
+        {
+            get { return _Address; }
+            set { _Address = value; }
+        }
+
         protected SqlDateTime _CreationDate;
         public SqlDateTime CreationDate
         {
