@@ -275,5 +275,88 @@ namespace AddressBook.DAL
         }
         #endregion Delete Contact By Id
 
+        #region Upload Image
+        public bool UploadImage(SqlInt32 ContactID, SqlInt32 UserID, SqlString FilePath, SqlString FileType, SqlString FileSize)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+
+                #region Create Command and Set Parameters
+                SqlCommand objCmd = new SqlCommand();
+                objCmd.Connection = objConn;
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_Contact_UpdateImagePathByPKUserID";
+
+                objCmd.Parameters.AddWithValue("@FilePath", FilePath);
+                objCmd.Parameters.AddWithValue("@FileType", FileType);
+                objCmd.Parameters.AddWithValue("@FileSize", FileSize);
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
+                objCmd.Parameters.AddWithValue("@ContactID", ContactID);
+                objCmd.ExecuteNonQuery();
+                #endregion Create Command and Set Parameters
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Message = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion Upload Image
+
+        #region Delete Image
+        public bool UploadImage(SqlInt32 ContactID, SqlInt32 UserID)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+
+                #region Create Command and Set Parameters
+                SqlCommand objCmd = new SqlCommand();
+                objCmd.Connection = objConn;
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_Contact_DeleteImageByPKUserID";
+
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
+                objCmd.Parameters.AddWithValue("@ContactID", ContactID);
+                objCmd.ExecuteNonQuery();
+                #endregion Create Command and Set Parameters
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _Message = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion Delete Image
+
     }
 }

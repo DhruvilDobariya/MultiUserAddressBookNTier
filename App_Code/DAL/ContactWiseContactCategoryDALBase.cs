@@ -118,7 +118,7 @@ namespace AddressBook.DAL
         #endregion Insert ContactWiseContactCategory
 
         #region Delete ContactWiseContactCategory By Id
-        public bool DeleteContactWiseContactCategory(SqlInt32 ContactWiseContactCategoryID, SqlInt32 UserID)
+        public bool DeleteContactWiseContactCategory(SqlInt32 ContactID, SqlInt32 UserID)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
