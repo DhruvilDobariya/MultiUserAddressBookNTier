@@ -85,7 +85,7 @@ namespace AddressBook.BAL
             else
             {
                 this.Message = ContactCategoryDAL.Message;
-                return true;
+                return false;
             }
         }
         #endregion Delete

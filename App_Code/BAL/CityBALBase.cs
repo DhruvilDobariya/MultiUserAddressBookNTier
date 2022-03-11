@@ -84,7 +84,7 @@ namespace AddressBook.BAL
             else
             {
                 this.Message = CityDAL.Message;
-                return true;
+                return false;
             }
         }
         #endregion Delete

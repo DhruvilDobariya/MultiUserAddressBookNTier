@@ -42,7 +42,11 @@
                 <asp:BoundField DataField="PinCode" HeaderText="Pin Code" />
                 <asp:BoundField DataField="STDCode" HeaderText="STD Code" />
                 <asp:BoundField DataField="StateName" HeaderText="State"/>
-                <asp:BoundField DataField="CreationDate" HeaderText="Creation Date" />
+                <asp:TemplateField HeaderText="CreationDate">
+                    <ItemTemplate>
+                        <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using AddressBook.ENT;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -89,65 +91,59 @@ public partial class AdminPanel_State_StateAddEdit : System.Web.UI.Page
         SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
         #endregion Set Connection
 
-        try
+        StateBAL stateBAL = new StateBAL();
+        StateENT entState = new StateENT();
+        entState.StateName = strStateName;
+        entState.StateCode = strStateCode;
+        entState.CountryID = strCountryID;
+        entState.UserID = Convert.ToInt32(Session["UserID"]);
+
+        if(RouteData.Values["StateID"] != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@StateName", strStateName);
-            objCmd.Parameters.AddWithValue("@StateCode", strStateCode);
-            objCmd.Parameters.AddWithValue("@CountryID", strCountryID);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            #endregion Create Command and Set Parameters
-
-            if (RouteData.Values["StateID"] != null)
+            #region Update
+            entState.StateID = Convert.ToInt32(RouteData.Values["StateID"]);
+            if (stateBAL.Update(entState))
             {
-                #region Update record
-                objCmd.CommandText = "PR_State_UpdateByPKUserID";
-                objCmd.Parameters.AddWithValue("@StateID", Convert.ToString(RouteData.Values["StateID"]));
-                objCmd.ExecuteNonQuery();
-                Response.Redirect("~/AdminPanel/State/List");
-                #endregion Update record
+                Session["Success"] = "State Updated Successfully";
+                Response.Redirect("~/AdminPanel/State/List", true);
             }
             else
             {
-                #region Add record
-                objCmd.CommandText = "PR_State_InsertUserID";
-                objCmd.ExecuteNonQuery();
-                lblMsg.Text = "State Added Successfully";
-                txtState.Text = txtCode.Text = "";
-                ddlCountry.SelectedIndex = -1;
-                txtState.Focus();
-                #endregion Add record
+                if (stateBAL.Message.Contains("Violation of UNIQUE KEY constraint 'UK_State_StateName_UserID'."))
+                {
+                    Session["Error"] = "State alrady exist!";
+                }
+                else
+                {
+                    Session["Error"] = stateBAL.Message;
+                }
             }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
+            #endregion Update
         }
-        catch (Exception ex)
+        else
         {
-            if (ex.Message.Contains("Violation of UNIQUE KEY constraint 'UK_State_StateName_UserID'."))
+            #region Insert
+            if (stateBAL.Insert(entState))
             {
-                lblMsg.Text = "State alrady exist!";
+                Session["Success"] = "State Added Successfully";
+                ClearControl();
             }
             else
             {
-                lblMsg.Text = ex.Message;
+                if (stateBAL.Message.Contains("Violation of UNIQUE KEY constraint 'UK_State_StateName_UserID'."))
+                {
+                    Session["Error"] = "State alrady exist!";
+                }
+                else
+                {
+                    Session["Error"] = stateBAL.Message;
+                }
             }
+            #endregion Insert
         }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-
     }
     #endregion SubmitForm
+
     #region Fill Controlls
     private void FillControlls(SqlInt32 Id)
     {
@@ -209,4 +205,13 @@ public partial class AdminPanel_State_StateAddEdit : System.Web.UI.Page
         }
     }
     #endregion Fill Controlls
+
+    #region Clear Control
+    private void ClearControl()
+    {
+        txtState.Text = "";
+        txtCode.Text = "";
+        ddlCountry.SelectedValue = "-1";
+    }
+    #endregion Clear Control
 }

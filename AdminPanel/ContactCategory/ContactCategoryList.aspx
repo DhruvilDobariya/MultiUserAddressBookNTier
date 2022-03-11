@@ -39,7 +39,11 @@
                 </asp:TemplateField>
                 <asp:BoundField DataField="ContactCategoryID" HeaderText="Id"/>
                 <asp:BoundField DataField="ContactCategoryName" HeaderText="Contact Category"/>
-                <asp:BoundField DataField="CreationDate" HeaderText="Creation Date"/>
+                <asp:TemplateField HeaderText="CreationDate">
+                    <ItemTemplate>
+                        <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>

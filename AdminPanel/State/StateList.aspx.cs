@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -23,38 +24,11 @@ public partial class AdminPanel_State_StateList : System.Web.UI.Page
     #region FillState
     private void FillState()
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
-        {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Bind Data
-            SqlCommand objCmd = new SqlCommand();
-            objCmd.Connection = objConn;
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.CommandText = "PR_State_SelectAllUserID";
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            gvState.DataSource = objSDR;
-            gvState.DataBind();
-            #endregion Create Command and Bind Data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
+        StateBAL stateBAL = new StateBAL();
+        DataTable dt = new DataTable();
+        dt = stateBAL.SelectAll(Convert.ToInt32(Session["UserID"]));
+        gvState.DataSource = dt;
+        gvState.DataBind();
     }
     #endregion FillState 
     #region GridViewRowCommand
@@ -73,43 +47,21 @@ public partial class AdminPanel_State_StateList : System.Web.UI.Page
     #region DeleteState
     private void DeleteState(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
+        StateBAL stateBAL = new StateBAL();
+        if (stateBAL.Delete(Id,Convert.ToInt32(Session["UserID"])))
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_State_DeleteByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@StateID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            lblMsg.Text = "State Deleted Successfully!";
-            #endregion Create Command and Set Parameters
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Success"] = "State Deleted Successfully";
         }
-        catch (Exception ex)
+        else
         {
-            if (ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+            if (stateBAL.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
             {
-                lblMsg.Text = "This State contain some records, So please delete these record, If you want to delete this state.";
+                Session["Error"] = "This State contain some records, So please delete these record, If you want to delete this state.";
             }
             else
             {
-                lblMsg.Text = ex.Message;
+                Session["Error"] = stateBAL.Message;
             }
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
         }
     }
     #endregion DeleteState

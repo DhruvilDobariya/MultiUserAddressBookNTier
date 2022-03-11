@@ -12,7 +12,6 @@ using System.Web.UI.WebControls;
 
 public partial class AdminPanel_Country_Read : System.Web.UI.Page
 {
-    string Message = "Done!";
     #region PageLode
     protected void Page_Load(object sender, EventArgs e)
     {

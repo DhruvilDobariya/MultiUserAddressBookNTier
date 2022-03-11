@@ -60,7 +60,7 @@ namespace AddressBook.BAL
             else
             {
                 this.Message = ContactWiseContactCategoryDAL.Message;
-                return true;
+                return false;
             }
         }
         #endregion Delete

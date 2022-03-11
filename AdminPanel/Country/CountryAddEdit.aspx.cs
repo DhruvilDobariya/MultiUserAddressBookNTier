@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
 {
-    #region PageLode
+    #region Page Load
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
@@ -26,7 +26,7 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
             }
         }
     }
-    #endregion PageLode
+    #endregion Page Load
     #region SubmimForm
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
@@ -56,13 +56,16 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
         if (txtCode.Text.Trim() != "")
             CountryCode = txtCode.Text.Trim();
         #endregion Server side validation
+
         CountryENT entCountry = new CountryENT();
         entCountry.CountryName = CountryName;
         entCountry.CountryCode = CountryCode;
         entCountry.UserID = Convert.ToInt32(Session["UserID"]);
         CountryBAL countryBAL = new CountryBAL();
+
         if(RouteData.Values["CountryID"] != null)
         {
+            #region Update
             entCountry.CountryID = Convert.ToInt32(RouteData.Values["CountryID"]);
             if (countryBAL.Update(entCountry))
             {
@@ -80,10 +83,12 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
                     Session["Error"] = countryBAL.Message;
                 }
             }
-            
+            #endregion Update
+
         }
         else
         {
+            #region Add
             if (countryBAL.Insert(entCountry))
             {
                 Session["Success"] = "Country Added Successfully";
@@ -100,9 +105,9 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
                     Session["Error"] = countryBAL.Message;
                 }
             }
-
+            #endregion Add
         }
-        
+
 
     }
     #endregion SubmitForm

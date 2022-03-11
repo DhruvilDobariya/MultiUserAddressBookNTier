@@ -40,7 +40,11 @@
                 <asp:BoundField DataField="CountryID" HeaderText="Id" />
                 <asp:BoundField DataField="CountryName" HeaderText="Name" />
                 <asp:BoundField DataField="CountryCode" HeaderText="Code" />
-                <asp:BoundField DataField="CreationDate" HeaderText="Creation Date" />
+                <asp:TemplateField HeaderText="CreationDate">
+                    <ItemTemplate>
+                        <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>

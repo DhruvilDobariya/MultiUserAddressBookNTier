@@ -66,14 +66,18 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Delete Image" ItemStyle-CssClass="text-center">
                         <ItemTemplate>
-                            <asp:LinkButton runat="server" ID="btnDeleteImg" CssClass="btn btn-danger" CommandName="DeleteImage" CommandArgument='<%# Eval("ContactID").ToString() %>'>
+                            <asp:LinkButton runat="server" ID="btnDeleteImg" CssClass="btn btn-danger" Enabled='<%# Convert.ToBoolean(("FilePath").ToString() != "")%>' CommandName="DeleteImage" CommandArgument='<%# Eval("ContactID").ToString() %>'>
                              <i class="fas fa-trash-alt"></i>
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField DataField="FileType" HeaderText="File Type" />
                     <asp:BoundField DataField="FileSize" HeaderText="File Size" />
-                    <asp:BoundField DataField="CreationDate" HeaderText="Creation Date" />
+                    <asp:TemplateField HeaderText="CreationDate">
+                    <ItemTemplate>
+                        <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
