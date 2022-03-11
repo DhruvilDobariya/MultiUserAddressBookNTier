@@ -46,11 +46,11 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
-
                 dt.Load(objSDR);
                 return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
 
                 #endregion Create Command and Bind Data
 
@@ -89,11 +89,11 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
-
                 dt.Load(objSDR);
                 return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
 
                 #endregion Create Command and Bind Data
 
@@ -290,11 +290,11 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
-
                 dt.Load(objSDR);
                 return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
 
                 #endregion Create Command and Bind Data
 

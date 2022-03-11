@@ -45,12 +45,12 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
 
                 dt.Load(objSDR);
                 return dt;
 
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
                 #endregion Create Command and Bind Data
 
             }
@@ -88,11 +88,12 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
 
                 dt.Load(objSDR);
                 return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
 
                 #endregion Create Command and Bind Data
 
@@ -224,7 +225,7 @@ namespace AddressBook.DAL
                 SqlCommand objCmd = new SqlCommand("PR_Country_DeleteByPKUserID", objConn);
                 objCmd.CommandType = CommandType.StoredProcedure;
                 objCmd.Parameters.AddWithValue("@CountryID", CountryID);
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(UserID));
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
                 objCmd.ExecuteNonQuery();
                 #endregion Create Command and Set Parameters
 
@@ -274,11 +275,11 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                if (objConn.State == ConnectionState.Open)
-                    objConn.Close();
-
                 dt.Load(objSDR);
                 return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
 
                 #endregion Create Command and Bind Data
 
