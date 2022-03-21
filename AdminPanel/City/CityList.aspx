@@ -37,7 +37,6 @@
                         </asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="CityID" HeaderText="Id" />
                 <asp:BoundField DataField="CityName" HeaderText="Name" />
                 <asp:BoundField DataField="PinCode" HeaderText="Pin Code" />
                 <asp:BoundField DataField="STDCode" HeaderText="STD Code" />

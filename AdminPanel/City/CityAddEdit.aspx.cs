@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using AddressBook.ENT;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -39,7 +41,7 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
         SqlString strCityName = SqlString.Null;
         SqlInt32 strStateID = SqlInt32.Null;
         SqlString strPinCode = SqlString.Null;
-        SqlString StrSTDCode = SqlString.Null;
+        SqlString strSTDCode = SqlString.Null;
         #endregion Local variable
         #region Server side validation
         if (txtCity.Text.Trim() == "" || ddlState.SelectedIndex == -1)
@@ -65,70 +67,52 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
             strStateID = Convert.ToInt32(ddlState.SelectedValue);
         if (txtPin.Text.Trim() != "")
             strPinCode = txtPin.Text.Trim();
-        if (txtPin.Text.Trim() != "")
-            StrSTDCode = txtSTD.Text.Trim();
+        if (txtSTD.Text.Trim() != "")
+            strSTDCode = txtSTD.Text.Trim();
         #endregion Set local variable
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        
+        CityBAL cityBAL = new CityBAL();
+        CityENT entCity =  new CityENT();
+
+        entCity.CityName = strCityName;
+        entCity.StateID = strStateID;
+        entCity.PinCode = strPinCode;
+        entCity.STDCode = strSTDCode;
+        entCity.UserID = Convert.ToInt32(Session["UserID"]);
+
+        if(RouteData.Values["CityID"] != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@CityName", strCityName);
-            objCmd.Parameters.AddWithValue("@StateID", strStateID);
-            objCmd.Parameters.AddWithValue("@PinCode", strPinCode);
-            objCmd.Parameters.AddWithValue("@STDCode", StrSTDCode);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            #endregion Create Command and Set Parameters
-
-            if (RouteData.Values["CityID"] != null)
+            #region Update
+            entCity.CityID = Convert.ToInt32(RouteData.Values["CityID"]);
+            if (cityBAL.Update(entCity))
             {
-                #region Update record
-                objCmd.CommandText = "PR_City_UpdateByPKUserID";
-                objCmd.Parameters.AddWithValue("@CityID", Convert.ToString(RouteData.Values["CityID"]));
-                objCmd.ExecuteNonQuery();
-                Response.Redirect("~/AdminPanel/City/List");
-                #endregion Update record
+                Session["Success"] = "City updated successfully";
+                Response.Redirect("~/AdminPanel/City/List", true);
             }
             else
             {
-                #region Add record
-                objCmd.CommandText = "PR_City_InsertUserID";
-                objCmd.ExecuteNonQuery();
-                lblMsg.Text = "City Added Successfully";
-                txtCity.Text = txtPin.Text = txtSTD.Text = "";
-                ddlState.SelectedIndex = -1;
-                #endregion Add record
+                Session["Error"] = cityBAL.Message;
             }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
+            #endregion Update
         }
-        catch (Exception ex)
+        else
         {
-            if (ex.Message.Contains("Violation of UNIQUE KEY constraint 'UK_City_CityName_UserID'. Cannot insert duplicate key in object 'dbo.City'."))
+            #region Insert
+            if (cityBAL.Insert(entCity))
             {
-                lblMsg.Text = "City alrady exist!";
+                Session["Success"] = "City added successfully";
+                ClearControl();
+
             }
             else
             {
-                lblMsg.Text = ex.Message;
+                Session["Error"] = cityBAL.Message;
             }
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            #endregion Insert
         }
     }
     #endregion Submit Form
+
     #region Fill Controlls
     private void FillControlls(SqlInt32 Id)
     {
@@ -193,4 +177,14 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
         }
     }
     #endregion Fill Controlls
+
+    #region Clear Control
+    private void ClearControl()
+    {
+        txtCity.Text = "";
+        txtPin.Text = "";
+        txtSTD.Text = "";
+        ddlState.SelectedValue = "-1";
+    }
+    #endregion Clear Control
 }

@@ -37,7 +37,6 @@
                         </asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="StateID" HeaderText="Id"/>
                 <asp:BoundField DataField="StateName" HeaderText="Name"/>
                 <asp:BoundField DataField="StateCode" HeaderText="Code"/>
                 <asp:BoundField DataField="CountryName" HeaderText="Country"/>

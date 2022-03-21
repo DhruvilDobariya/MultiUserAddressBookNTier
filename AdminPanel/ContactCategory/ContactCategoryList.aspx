@@ -37,7 +37,6 @@
                         </asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="ContactCategoryID" HeaderText="Id"/>
                 <asp:BoundField DataField="ContactCategoryName" HeaderText="Contact Category"/>
                 <asp:TemplateField HeaderText="CreationDate">
                     <ItemTemplate>

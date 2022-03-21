@@ -26,15 +26,15 @@ namespace AddressBook.ENT
             set { _CityName = value; }
         }
 
-        protected SqlInt32 _PinCode;
-        public SqlInt32 PinCode
+        protected SqlString _PinCode;
+        public SqlString PinCode
         {
             get { return _PinCode; }
             set { _PinCode = value; }
         }
 
-        protected SqlInt32 _STDCode;
-        public SqlInt32 STDCode
+        protected SqlString _STDCode;
+        public SqlString STDCode
         {
             get { return _STDCode; }
             set { _STDCode = value; }

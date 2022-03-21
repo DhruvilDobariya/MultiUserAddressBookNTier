@@ -38,7 +38,6 @@
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:BoundField DataField="ContactId" HeaderText="Id" />
                     <asp:BoundField DataField="ContactName" HeaderText="Name" />
                     <asp:TemplateField HeaderText="Contact Categories" ItemStyle-CssClass="text-center">
                         <ItemTemplate>

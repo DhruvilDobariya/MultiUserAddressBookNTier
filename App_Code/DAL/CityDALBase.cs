@@ -143,9 +143,9 @@ namespace AddressBook.DAL
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("The DELETE Cityment conflicted with the REFERENCE constraint"))
+                if (ex.Message.Contains("Violation of UNIQUE KEY constraint 'UK_City_CityName_UserID'."))
                 {
-                    _Message = "This City contain some records, So please delete these record, If you want to delete this City.";
+                    _Message = "City already exist";
                     return false;
                 }
                 else
@@ -195,9 +195,9 @@ namespace AddressBook.DAL
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("The DELETE Cityment conflicted with the REFERENCE constraint"))
+                if (ex.Message.Contains("Violation of UNIQUE KEY constraint 'UK_City_CityName_UserID'."))
                 {
-                    _Message = "This City contain some records, So please delete these record, If you want to delete this City.";
+                    _Message = "City already exist";
                     return false;
                 }
                 else

@@ -18,7 +18,6 @@
         <div class="scrollmanu">
             <asp:GridView ID="gvContactWiseContactCategory" runat="server" AutoGenerateColumns="false">
                 <Columns>
-                    <asp:BoundField DataField="ContactWiseContactCategoryID" HeaderText="Id"/>
                     <asp:BoundField DataField="ContactCategoryName" HeaderText="Contact Category"/>
                 </Columns>
             </asp:GridView>
