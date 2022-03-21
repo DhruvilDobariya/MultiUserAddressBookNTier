@@ -50,7 +50,7 @@ namespace AddressBook.BAL
         #endregion Select All
 
         #region Select By PK
-        public DataTable SelectByPK(SqlInt32 ContactId, SqlInt32 UserId)
+        public ContactENT SelectByPK(SqlInt32 ContactId, SqlInt32 UserId)
         {
             ContactDAL ContactDAL = new ContactDAL();
             return ContactDAL.GetContactById(ContactId, UserId);

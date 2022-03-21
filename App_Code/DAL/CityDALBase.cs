@@ -69,7 +69,7 @@ namespace AddressBook.DAL
         #endregion Get City List
 
         #region Get City By Id
-        public DataTable GetCityById(SqlInt32 CityId, SqlInt32 UserId)
+        public CityENT GetCityById(SqlInt32 CityId, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -89,8 +89,43 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                dt.Load(objSDR);
-                return dt;
+                CityENT entCity = new CityENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["CityID"].Equals(DBNull.Value))
+                        {
+                            string CityID = objSDR["CityID"].ToString();
+                            entCity.CityID = Convert.ToInt32(CityID);
+                        }
+                        if (!objSDR["StateID"].Equals(DBNull.Value))
+                        {
+                            string StateID = objSDR["StateID"].ToString();
+                            entCity.StateID = Convert.ToInt32(StateID);
+                        }
+                        if (!objSDR["CityName"].Equals(DBNull.Value))
+                        {
+                            entCity.CityName = objSDR["CityName"].ToString();
+                        }
+                        if (!objSDR["PinCode"].Equals(DBNull.Value))
+                        {
+                            entCity.PinCode = objSDR["PinCode"].ToString();
+                        }
+                        if (!objSDR["STDCode"].Equals(DBNull.Value))
+                        {
+                            entCity.STDCode = objSDR["STDCode"].ToString();
+                        }
+                        if (!objSDR["CreationDate"].Equals(DBNull.Value))
+                        {
+                            entCity.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        break;
+                    }
+                }
+
+                return entCity;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();

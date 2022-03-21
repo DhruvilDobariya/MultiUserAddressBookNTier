@@ -103,19 +103,9 @@ public partial class AdminPanel_ContactCategory_ContactCategoryAddEdit : System.
     private void FillControlls(SqlInt32 Id)
     {
         ContactCategoryBAL contactCategoryBAL = new ContactCategoryBAL();
-        DataTable dt = contactCategoryBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
+        ContactCategoryENT entContactCategory = contactCategoryBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
-        if (dt.Rows.Count > 0)
-        {
-            foreach(var row in dt.Rows)
-            {
-                if (!row.Equals(DBNull.Value))
-                {
-                    //txtContactCategory.Text = objSDR["ContactCategoryName"].ToString();
-                }
-                break;
-            }
-        }
+
     }
     #endregion Fill Controlls
 

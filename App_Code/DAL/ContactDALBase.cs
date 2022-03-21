@@ -67,7 +67,7 @@ namespace AddressBook.DAL
         #endregion Get Contact List
 
         #region Get Contact By Id
-        public DataTable GetContactById(SqlInt32 ContactId, SqlInt32 UserId)
+        public ContactENT GetContactById(SqlInt32 ContactId, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -87,8 +87,86 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                dt.Load(objSDR);
-                return dt;
+                ContactENT entContact = new ContactENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["ContactID"].Equals(DBNull.Value))
+                        {
+                            string ContactID = objSDR["ContactID"].ToString();
+                            entContact.ContactID = Convert.ToInt32(ContactID);
+                        }
+                        if (!objSDR["ContactName"].Equals(DBNull.Value))
+                        {
+                            entContact.ContactName = objSDR["ContactName"].ToString();
+                        }
+                        if (!objSDR["CityID"].Equals(DBNull.Value))
+                        {
+                            string CityID = objSDR["CityID"].ToString();
+                            entContact.CityID = Convert.ToInt32(CityID);
+                        }
+                        if (!objSDR["StateID"].Equals(DBNull.Value))
+                        {
+                            string StateID = objSDR["StateID"].ToString();
+                            entContact.StateID = Convert.ToInt32(StateID);
+                        }
+                        if (!objSDR["CountryID"].Equals(DBNull.Value))
+                        {
+                            string CountryID = objSDR["CountryID"].ToString();
+                            entContact.CountryID = Convert.ToInt32(CountryID);
+                        }
+                        if (!objSDR["ContactNo"].Equals(DBNull.Value))
+                        {
+                            entContact.ContactNo = objSDR["ContactNo"].ToString();
+                        }
+                        if (!objSDR["WhatsappNo"].Equals(DBNull.Value))
+                        {
+                            entContact.WhatsappNo = objSDR["WhatsappNo"].ToString();
+                        }
+                        if (!objSDR["BirthDate"].Equals(DBNull.Value))
+                        {
+                            entContact.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        if (!objSDR["Email"].Equals(DBNull.Value))
+                        {
+                            entContact.Email = objSDR["Email"].ToString();
+                        }
+                        if (!objSDR["Age"].Equals(DBNull.Value))
+                        {
+                            string Age = objSDR["Age"].ToString();
+                            entContact.Age = Convert.ToInt32(Age);
+                        }
+                        if (!objSDR["BloodGroup"].Equals(DBNull.Value))
+                        {
+                            entContact.BloodGroup = objSDR["BloodGroup"].ToString();
+                        }
+                        if (!objSDR["FacebookID"].Equals(DBNull.Value))
+                        {
+                            entContact.FacebookID = objSDR["FacebookID"].ToString();
+                        }
+                        if (!objSDR["LinkedinID"].Equals(DBNull.Value))
+                        {
+                            entContact.LinkedinID = objSDR["LinkedinID"].ToString();
+                        }
+                        if (!objSDR["Address"].Equals(DBNull.Value))
+                        {
+                            entContact.Address = objSDR["Address"].ToString();
+                        }
+                        if (!objSDR["FilePath"].Equals(DBNull.Value))
+                        {
+                            entContact.FilePath = objSDR["FilePath"].ToString();
+                        }
+                        if (!objSDR["CreationDate"].Equals(DBNull.Value))
+                        {
+                            entContact.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        break;
+                    }
+                }
+
+                return entContact;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();

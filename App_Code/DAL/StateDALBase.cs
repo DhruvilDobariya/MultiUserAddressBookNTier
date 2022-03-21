@@ -68,7 +68,7 @@ namespace AddressBook.DAL
         #endregion Get State List
 
         #region Get State By Id
-        public DataTable GetStateById(SqlInt32 StateId, SqlInt32 UserId)
+        public StateENT GetStateById(SqlInt32 StateId, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -88,8 +88,39 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                dt.Load(objSDR);
-                return dt;
+                StateENT entState = new StateENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["CountryID"].Equals(DBNull.Value))
+                        {
+                            string CountryID = objSDR["CountryID"].ToString();
+                            entState.CountryID = Convert.ToInt32(CountryID);
+                        }
+                        if (!objSDR["StateID"].Equals(DBNull.Value))
+                        {
+                            string StateID = objSDR["StateID"].ToString();
+                            entState.StateID = Convert.ToInt32(StateID);
+                        }
+                        if (!objSDR["StateName"].Equals(DBNull.Value))
+                        {
+                            entState.StateName = objSDR["StateName"].ToString();
+                        }
+                        if (!objSDR["StateCode"].Equals(DBNull.Value))
+                        {
+                            entState.StateCode = objSDR["StateCode"].ToString();
+                        }
+                        if (!objSDR["CreationDate"].Equals(DBNull.Value))
+                        {
+                            entState.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        break;
+                    }
+                }
+
+                return entState;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();

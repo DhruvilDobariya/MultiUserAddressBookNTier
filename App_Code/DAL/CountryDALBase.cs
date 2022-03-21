@@ -68,7 +68,7 @@ namespace AddressBook.DAL
         #endregion Get Country List
 
         #region Get Country By Id
-        public DataTable GetCountryById(SqlInt32 CountryId, SqlInt32 UserId)
+        public CountryENT GetCountryById(SqlInt32 CountryId, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -77,7 +77,7 @@ namespace AddressBook.DAL
             {
                 if (objConn.State != ConnectionState.Open)
                     objConn.Open();
-                DataTable dt = new DataTable();
+                
                 #region Create Command and Bind Data
                 SqlCommand objCmd = new SqlCommand();
                 objCmd.Connection = objConn;
@@ -88,9 +88,34 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
+                CountryENT entCountry = new CountryENT();
 
-                dt.Load(objSDR);
-                return dt;
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["CountryID"].Equals(DBNull.Value))
+                        {
+                            string CountryID = objSDR["CountryID"].ToString();
+                            entCountry.CountryID = Convert.ToInt32(CountryID);
+                        }
+                        if (!objSDR["CountryName"].Equals(DBNull.Value))
+                        {
+                            entCountry.CountryName = objSDR["CountryName"].ToString();
+                        }
+                        if (!objSDR["CountryCode"].Equals(DBNull.Value))
+                        {
+                            entCountry.CountryCode = objSDR["CountryCode"].ToString();
+                        }
+                        if (!objSDR["CreationDate"].Equals(DBNull.Value))
+                        {
+                            entCountry.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        break;
+                    }
+                }
+
+                return entCountry;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();

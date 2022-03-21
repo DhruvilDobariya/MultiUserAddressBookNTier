@@ -68,7 +68,7 @@ namespace AddressBook.DAL
         #endregion Get ContactCategory List
 
         #region Get ContactCategory By Id
-        public DataTable GetContactCategoryById(SqlInt32 ContactCategoryId, SqlInt32 UserId)
+        public ContactCategoryENT GetContactCategoryById(SqlInt32 ContactCategoryId, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -88,8 +88,30 @@ namespace AddressBook.DAL
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                dt.Load(objSDR);
-                return dt;
+                ContactCategoryENT entContactCategory = new ContactCategoryENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["ContactCategoryID"].Equals(DBNull.Value))
+                        {
+                            string ContactCategoryID = objSDR["ContactCategoryID"].ToString();
+                            entContactCategory.ContactCategoryID = Convert.ToInt32(ContactCategoryID);
+                        }
+                        if (!objSDR["ContactCategoryName"].Equals(DBNull.Value))
+                        {
+                            entContactCategory.ContactCategoryName = objSDR["ContactCategoryName"].ToString();
+                        }
+                        if (!objSDR["CreationDate"].Equals(DBNull.Value))
+                        {
+                            entContactCategory.CreationDate = Convert.ToDateTime(objSDR["CreationDate"].ToString());
+                        }
+                        break;
+                    }
+                }
+
+                return entContactCategory;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();

@@ -51,7 +51,7 @@ namespace AddressBook.BAL
         #endregion Select All
 
         #region Select By PK
-        public DataTable SelectByPK(SqlInt32 ContactCategoryId, SqlInt32 UserId)
+        public ContactCategoryENT SelectByPK(SqlInt32 ContactCategoryId, SqlInt32 UserId)
         {
             ContactCategoryDAL ContactCategoryDAL = new ContactCategoryDAL();
             return ContactCategoryDAL.GetContactCategoryById(ContactCategoryId, UserId);

@@ -114,56 +114,16 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
     #region FillControlls
     private void FillControlls(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        CountryBAL countryBAL = new CountryBAL();
+        CountryENT entCountry = countryBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
-        try
+        if(!entCountry.CountryName.IsNull)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Country_SelectByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@CountryID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-            #region Get data and set data
-            if (objSDR.HasRows)
-            {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["CountryName"].Equals(DBNull.Value))
-                    {
-                        txtCountry.Text = objSDR["CountryName"].ToString();
-                    }
-                    if (!objSDR["CountryCode"].Equals(DBNull.Value))
-                    {
-                        txtCode.Text = objSDR["CountryCode"].ToString();
-                    }
-                    break;
-                }
-            }
-            else
-            {
-                lblMsg.Text = "Country Not Found!";
-            }
-            #endregion Get data and set data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            txtCountry.Text = entCountry.CountryName.Value.ToString();
         }
-        catch (Exception ex)
+        if (!entCountry.CountryCode.IsNull)
         {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            txtCode.Text = entCountry.CountryCode.Value.ToString();
         }
     }
     #endregion FillControlls
