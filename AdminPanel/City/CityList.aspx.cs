@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -23,39 +24,10 @@ public partial class AdminPanel_City_CityList : System.Web.UI.Page
     #region Fill City
     private void FillCity()
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
-        {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Bind Data
-            SqlCommand objCmd = new SqlCommand();
-            objCmd.Connection = objConn;
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.CommandText = "PR_City_SelectAllUserID";
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            gvCity.DataSource = objSDR;
-            gvCity.DataBind();
-            #endregion Create Command and Bind Data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
+        CityBAL cityBAL = new CityBAL();
+        DataTable dt = cityBAL.SelectAll(Convert.ToInt32(Session["UserID"]));
+        gvCity.DataSource = dt;
+        gvCity.DataBind();
     }
     #endregion FillCity
     #region GridView RowCommand
@@ -74,43 +46,14 @@ public partial class AdminPanel_City_CityList : System.Web.UI.Page
     #region Delete City
     private void DeleteCity(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
+        CityBAL cityBAL = new CityBAL();
+        if (cityBAL.Delete(Id, Convert.ToInt32(Session["UserID"])))
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_City_DeleteByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@CityID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            lblMsg.Text = "City Deleted Successfully!";
-            #endregion Create Command and Set Parameters
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Success"] = "City deleted successfully";
         }
-        catch (Exception ex)
+        else
         {
-            if (ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
-            {
-                lblMsg.Text = "This City contain some records, So please delete these record, If you want to delete this city.";
-            }
-            else
-            {
-                lblMsg.Text = ex.Message;
-            }
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = cityBAL.Message;
         }
     }
     #endregion Delete City

@@ -16,9 +16,9 @@ public partial class AdminPanel_Contact_ContactWiseContactCategoryList : System.
     {
         if (!Page.IsPostBack)
         {
-            if(Request.QueryString["ContactID"] != null)
+            if(RouteData.Values["ContactID"] != null)
             {
-                FillContactWiseContactCategory(Convert.ToInt32(Request.QueryString["ContactID"]));
+                FillContactWiseContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
             }
         }
     }

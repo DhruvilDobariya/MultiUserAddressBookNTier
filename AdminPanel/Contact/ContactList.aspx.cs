@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -24,39 +25,10 @@ public partial class AdminPanel_Contact_ContactList : System.Web.UI.Page
     #region Fill Contact
     private void FillContact()
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
-        {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Bind Data
-            SqlCommand objCmd = new SqlCommand();
-            objCmd.Connection = objConn;
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.CommandText = "PR_Contact_SelectAllUserID";
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            gvContact.DataSource = objSDR;
-            gvContact.DataBind();
-            #endregion Create Command and Bind Data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
+        ContactBAL contactBAL = new ContactBAL();
+        DataTable dt = contactBAL.SelectAll(Convert.ToInt32(Session["UserID"]));
+        gvContact.DataSource = dt;
+        gvContact.DataBind();
     }
     #endregion Fill Contact
     #region GridView RowCommand

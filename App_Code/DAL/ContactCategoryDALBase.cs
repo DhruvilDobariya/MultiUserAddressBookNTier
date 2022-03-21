@@ -222,7 +222,7 @@ namespace AddressBook.DAL
                 SqlCommand objCmd = new SqlCommand("PR_ContactCategory_DeleteByPKUserID", objConn);
                 objCmd.CommandType = CommandType.StoredProcedure;
                 objCmd.Parameters.AddWithValue("@ContactCategoryID", ContactCategoryID);
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(UserID));
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
                 objCmd.ExecuteNonQuery();
                 #endregion Create Command and Set Parameters
 

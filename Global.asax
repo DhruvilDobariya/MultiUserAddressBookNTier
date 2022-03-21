@@ -61,7 +61,9 @@
         routes.MapPageRoute("AdminPanelContactEdit", "AdminPanel/Contact/Edit/{ContactID}", "~/AdminPanel/Contact/ContactAddEdit.aspx");
         routes.MapPageRoute("UserEdit", "User/Edit/{UserID}", "~/UserAddEdit.aspx");
 
-        routes.MapPageRoute("AdminPanelContactWiseContactCategory", "AdminPanel/Contact/{ContactID}/ContactCategory", "~/AdminPanel/ContactWiseContactCategoryList");
+        routes.MapPageRoute("AdminPanelContactWiseContactCategory", "AdminPanel/Contact/{ContactID}/ContactCategory", "~/AdminPanel/Contact/ContactWiseContactCategoryList.aspx");
+
+        /* ~/AdminPanel/Contact/ContactWiseContactCategoryList.aspx?ContactID=1059 */
     }
 
 </script>

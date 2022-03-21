@@ -240,7 +240,7 @@ namespace AddressBook.DAL
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("The DELETE Cityment conflicted with the REFERENCE constraint"))
+                if (ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
                 {
                     _Message = "This City contain some records, So please delete these record, If you want to delete this City.";
                     return false;
