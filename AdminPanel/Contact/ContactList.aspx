@@ -73,10 +73,10 @@
                     <asp:BoundField DataField="FileType" HeaderText="File Type" />
                     <asp:BoundField DataField="FileSize" HeaderText="File Size" />
                     <asp:TemplateField HeaderText="CreationDate">
-                    <ItemTemplate>
-                        <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
-                    </ItemTemplate>
-                </asp:TemplateField>
+                        <ItemTemplate>
+                            <%# Convert.ToDateTime(Eval("CreationDate").ToString()).ToShortDateString() %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>

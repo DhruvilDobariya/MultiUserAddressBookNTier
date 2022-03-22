@@ -302,7 +302,8 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
             }
             if (!entContact.BirthDate.IsNull)
             {
-                txtBirthDate.Text = entContact.BirthDate.Value.ToString("yyyy-MM-dd");
+                DateTime dt = entContact.BirthDate.Value;
+                txtBirthDate.Text = dt.ToString("yyyy-MM-dd");
             }
             if (!entContact.Email.IsNull)
             {
