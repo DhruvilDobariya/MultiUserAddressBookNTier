@@ -6,12 +6,16 @@ using System.Web;
 /// <summary>
 /// Summary description for UserBAL
 /// </summary>
-public class UserBAL
+
+namespace AddressBook.BAL
 {
-    public UserBAL()
+    public class UserBAL : UserBALBase
     {
-        //
-        // TODO: Add constructor logic here
-        //
+        public UserBAL()
+        {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
     }
 }

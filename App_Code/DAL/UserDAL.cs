@@ -6,12 +6,16 @@ using System.Web;
 /// <summary>
 /// Summary description for UserDAL
 /// </summary>
-public class UserDAL
+
+namespace AddressBook.DAL
 {
-    public UserDAL()
+    public class UserDAL : UserDALBase
     {
-        //
-        // TODO: Add constructor logic here
-        //
+        public UserDAL()
+        {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
     }
 }
