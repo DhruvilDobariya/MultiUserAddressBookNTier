@@ -116,64 +116,27 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
     #region Fill Controlls
     private void FillControlls(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        CityBAL cityBAL = new CityBAL();
+        CityENT entCity = cityBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
-        try
+        if(entCity != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_City_SelectByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@CityID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-            #region Get data and set data
-            if (objSDR.HasRows)
+            if (!entCity.CityName.IsNull)
             {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["CityName"].Equals(DBNull.Value))
-                    {
-                        txtCity.Text = objSDR["CityName"].ToString();
-                    }
-                    if (!objSDR["STDCode"].Equals(DBNull.Value))
-                    {
-                        txtSTD.Text = objSDR["STDCode"].ToString();
-                    }
-                    if (!objSDR["PinCode"].Equals(DBNull.Value))
-                    {
-                        txtPin.Text = objSDR["PinCode"].ToString();
-                    }
-                    if (!objSDR["StateID"].Equals(DBNull.Value))
-                    {
-                        ddlState.SelectedValue = objSDR["StateID"].ToString();
-                    }
-                    break;
-                }
+                txtCity.Text = entCity.CityName.Value.ToString();
             }
-            else
+            if (!entCity.StateID.IsNull)
             {
-                lblMsg.Text = "City Not Found!";
+                ddlState.SelectedValue = entCity.StateID.Value.ToString();
             }
-            #endregion Get data and set data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            if (!entCity.PinCode.IsNull)
+            {
+                txtPin.Text = entCity.PinCode.Value.ToString();
+            }
+            if (!entCity.STDCode.IsNull)
+            {
+                txtSTD.Text = entCity.STDCode.Value.ToString();
+            }
         }
     }
     #endregion Fill Controlls

@@ -147,61 +147,23 @@ public partial class AdminPanel_State_StateAddEdit : System.Web.UI.Page
     #region Fill Controlls
     private void FillControlls(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        StateBAL stateBAL = new StateBAL();
+        StateENT entState = stateBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
-        try
+        if(entState != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_State_SelectByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@StateID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            #region Get data and set data
-            if (objSDR.HasRows)
+            if (!entState.StateName.IsNull)
             {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["StateName"].Equals(DBNull.Value))
-                    {
-                        txtState.Text = objSDR["StateName"].ToString();
-                    }
-                    if (!objSDR["StateCode"].Equals(DBNull.Value))
-                    {
-                        txtCode.Text = objSDR["StateCode"].ToString();
-                    }
-                    if (!objSDR["CountryID"].Equals(DBNull.Value))
-                    {
-                        ddlCountry.SelectedValue = objSDR["CountryID"].ToString();
-                    }
-                    break;
-                }
+                txtState.Text = entState.StateName.Value.ToString();
             }
-            else
+            if (!entState.StateCode.IsNull)
             {
-                lblMsg.Text = "State Not Found!";
+                txtCode.Text = entState.StateCode.Value.ToString();
             }
-            #endregion Get data and set data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            if(!entState.StateID.IsNull)
+            {
+                ddlCountry.SelectedValue = entState.CountryID.Value.ToString();
+            }
         }
     }
     #endregion Fill Controlls

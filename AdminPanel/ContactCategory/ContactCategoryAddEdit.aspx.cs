@@ -105,6 +105,13 @@ public partial class AdminPanel_ContactCategory_ContactCategoryAddEdit : System.
         ContactCategoryBAL contactCategoryBAL = new ContactCategoryBAL();
         ContactCategoryENT entContactCategory = contactCategoryBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
+        if(entContactCategory != null)
+        {
+            if (!entContactCategory.ContactCategoryName.IsNull)
+            {
+                txtContactCategory.Text = entContactCategory.ContactCategoryName.Value.ToString();
+            }
+        }
 
     }
     #endregion Fill Controlls
