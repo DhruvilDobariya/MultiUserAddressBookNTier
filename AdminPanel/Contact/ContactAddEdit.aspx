@@ -98,7 +98,7 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <asp:Label runat="server" ID="lblFile" onchange="fuFileChenge" CssClass="form-lable m-1">Enter Document</asp:Label>
+                        <asp:Label runat="server" ID="lblFile" onchange="fuFileChenge" CssClass="form-lable m-1">Upload Image</asp:Label>
                         <asp:FileUpload runat="server" ID="fuFile" onChange="uploadImage()" CssClass="form-control m-1" />
                     </div>
                     <div class="col-md-6 text-center">

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using AddressBook.ENT;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -269,111 +271,70 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
     #region Fill Controlls
     private void FillControls(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        ContactBAL contactBAL = new ContactBAL();
+        ContactENT entContact = contactBAL.SelectByPK(Id, Convert.ToInt32(Session["UserID"]));
 
-        try
+        if (entContact != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Contact_SelectByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            #region Get data and set data
-            if (objSDR.HasRows)
+            if (!entContact.ContactName.IsNull)
             {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["ContactName"].Equals(DBNull.Value))
-                    {
-                        txtContact.Text = objSDR["ContactName"].ToString();
-                    }
-                    if (!objSDR["CityID"].Equals(DBNull.Value))
-                    {
-                        ddlCity.SelectedValue = objSDR["CityID"].ToString();
-                    }
-                    if (!objSDR["StateID"].Equals(DBNull.Value))
-                    {
-                        ddlState.SelectedValue = objSDR["StateID"].ToString();
-                    }
-                    if (!objSDR["CountryID"].Equals(DBNull.Value))
-                    {
-                        ddlCountry.SelectedValue = objSDR["CountryID"].ToString();
-                    }
-                    if (!objSDR["ContactNo"].Equals(DBNull.Value))
-                    {
-                        txtContactNo.Text = objSDR["ContactNo"].ToString();
-                    }
-                    if (!objSDR["WhatsappNo"].Equals(DBNull.Value))
-                    {
-                        txtWhatsappNo.Text = objSDR["WhatsappNo"].ToString();
-                    }
-                    if (!objSDR["BirthDate"].Equals(DBNull.Value))
-                    {
-                        DateTime bd = Convert.ToDateTime(objSDR["BirthDate"]);
-                        //txtBirthDate.Text = bd.ToShortDateString();
-                        txtBirthDate.Text = bd.ToString("yyyy-MM-dd");
-                    }
-                    if (!objSDR["Email"].Equals(DBNull.Value))
-                    {
-                        txtEmail.Text = objSDR["Email"].ToString();
-                    }
-                    if (!objSDR["Age"].Equals(DBNull.Value))
-                    {
-                        txtAge.Text = objSDR["Age"].ToString();
-                    }
-                    if (!objSDR["BloodGroup"].Equals(DBNull.Value))
-                    {
-                        txtBloodGroup.Text = objSDR["BloodGroup"].ToString();
-                    }
-                    if (!objSDR["FacebookID"].Equals(DBNull.Value))
-                    {
-                        txtFecebook.Text = objSDR["FacebookID"].ToString();
-                    }
-                    if (!objSDR["LinkedinID"].Equals(DBNull.Value))
-                    {
-                        txtLinkedin.Text = objSDR["LinkedinID"].ToString();
-                    }
-                    if (!objSDR["Address"].Equals(DBNull.Value))
-                    {
-                        txtAddress.Text = objSDR["Address"].ToString();
-                    }
-                    if (!objSDR["FilePath"].Equals(DBNull.Value))
-                    {
-                        imgImage.ImageUrl = objSDR["FilePath"].ToString();
-                        imgImage.Visible = true;
-                    }
-                    break;
-                }
+                txtContact.Text = entContact.ContactName.Value.ToString();
             }
-            else
+            if (!entContact.CountryID.IsNull)
             {
-                lblMsg.Text = "Contact Not Found!";
+                ddlCountry.SelectedValue = entContact.CountryID.Value.ToString();
             }
-            #endregion Get data and set data
+            if (!entContact.StateID.IsNull)
+            {
+                ddlState.SelectedValue = entContact.StateID.Value.ToString();
+            }
+            if (!entContact.CityID.IsNull)
+            {
+                ddlCity.SelectedValue = entContact.CityID.Value.ToString();
+            }
+            if (!entContact.ContactNo.IsNull)
+            {
+                txtContactNo.Text = entContact.ContactNo.Value.ToString();
+            }
+            if (!entContact.WhatsappNo.IsNull)
+            {
+                txtWhatsappNo.Text = entContact.WhatsappNo.Value.ToString();
+            }
+            if (!entContact.BirthDate.IsNull)
+            {
+                txtBirthDate.Text = entContact.BirthDate.Value.ToString("yyyy-MM-dd");
+            }
+            if (!entContact.Email.IsNull)
+            {
+                txtEmail.Text = entContact.Email.Value.ToString();
+            }
+            if (!entContact.Age.IsNull)
+            {
+                txtAge.Text = entContact.Age.Value.ToString();
+            }
+            if (!entContact.BloodGroup.IsNull)
+            {
+                txtBloodGroup.Text = entContact.BloodGroup.Value.ToString();
+            }
+            if (!entContact.FacebookID.IsNull)
+            {
+                txtFecebook.Text = entContact.FacebookID.Value.ToString();
+            }
+            if (!entContact.LinkedinID.IsNull)
+            {
+                txtLinkedin.Text = entContact.LinkedinID.Value.ToString();
+            }
+            if (!entContact.Address.IsNull)
+            {
+                txtAddress.Text = entContact.Address.Value.ToString();
+            }
+            if (!entContact.FilePath.IsNull)
+            {
+                imgImage.ImageUrl = entContact.FilePath.Value.ToString();
+                imgImage.Visible = true;
+            }
 
             FillContactCategoryCheckBoxs(Id);
-
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
         }
     }
     #endregion Fill Controlls
