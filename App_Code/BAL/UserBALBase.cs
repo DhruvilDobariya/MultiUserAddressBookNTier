@@ -25,9 +25,35 @@ namespace AddressBook.BAL
         public UserENT ValidateUser(SqlString UserName, SqlString Password)
         {
             UserDAL userDAL = new UserDAL();
-            return userDAL.ValidateUser(UserName, Password);
+            UserENT entUser = userDAL.ValidateUser(UserName, Password);
+            if (entUser != null)
+            {
+                return entUser;
+            }
+            else
+            {
+                _Message = userDAL.Message;
+                return null;
+            }
         }
         #endregion Validate User
+
+        #region Select By PK
+        public UserENT SelectByPK(SqlInt32 UserId)
+        {
+            UserDAL userDAL = new UserDAL();
+            UserENT entUser = userDAL.SelectByPK(UserId);
+            if(entUser != null)
+            {
+                return entUser;
+            }
+            else
+            {
+                _Message = userDAL.Message;
+                return null;
+            }
+        }
+        #endregion Select By PK
 
         #region Insert
         public bool Insert(UserENT entUser)

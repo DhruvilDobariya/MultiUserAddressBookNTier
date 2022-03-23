@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using AddressBook.ENT;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -49,52 +51,25 @@ public partial class AdminPanel_Login : System.Web.UI.Page
         if (txtPassword.Text.Trim() != "")
             strPassword = txtPassword.Text.Trim();
         #endregion Set local variable
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+
+        UserBAL userBAL = new UserBAL();
+        UserENT entUser = userBAL.ValidateUser(strUsername, strPassword);
+
+        if(entUser != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_User_SelectByUsernamePassword", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@UserName", strUsername);
-            objCmd.Parameters.AddWithValue("@Password", strPassword);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            #region Get data and validate user
-            if (objSDR.HasRows)
+            if (!entUser.UserID.IsNull)
             {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["UserID"].Equals(DBNull.Value))
-                        Session["UserID"] = objSDR["UserID"].ToString().Trim();
-                    if (!objSDR["DisplayName"].Equals(DBNull.Value))
-                        Session["DisplayName"] = objSDR["DisplayName"].ToString().Trim();
-                    break;
-                }
-                Response.Redirect("~/AdminPanel/Home");
+                Session["UserID"] = entUser.UserID.Value.ToString();
             }
-            else
+            if (!entUser.DisplayName.IsNull)
             {
-                lblMsg.Text = "Username or Password Invalid!";
+                Session["DisplayName"] = entUser.DisplayName.Value.ToString();
             }
-            #endregion Get data and validate user
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Response.Redirect("~/AdminPanel/Home", true);
         }
-        catch (Exception ex)
+        else
         {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            lblMsg.Text = userBAL.Message;
         }
     }
     #endregion Submit form

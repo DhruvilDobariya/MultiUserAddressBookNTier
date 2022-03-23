@@ -51,7 +51,7 @@ namespace AddressBook.DAL
                     {
                         if (!objSDR["UserID"].Equals(DBNull.Value))
                         {
-                            string UserID = objSDR["UserID"].ToString().Trim();
+                            entUser.UserID = Convert.ToInt32(objSDR["UserID"].ToString().Trim());
                         }
                         if (!objSDR["UserName"].Equals(DBNull.Value))
                         {
@@ -103,6 +103,78 @@ namespace AddressBook.DAL
             }
         }
         #endregion Validate User
+
+        #region Select By PK
+        public UserENT SelectByPK(SqlInt32 UserID)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+
+                #region Create Command and Set Parameters
+                SqlCommand objCmd = new SqlCommand("PR_User_SelectByPK", objConn);
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
+                SqlDataReader objSDR = objCmd.ExecuteReader();
+                #endregion Create Command and Set Parameters
+
+                #region Get data and validate user
+                UserENT entUser = new UserENT();
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["UserName"].Equals(DBNull.Value))
+                        {
+                            entUser.UserName = objSDR["UserName"].ToString().Trim();
+                        }
+                        if (!objSDR["Password"].Equals(DBNull.Value))
+                        {
+                            entUser.Password = objSDR["Password"].ToString().Trim();
+                        }
+                        if (!objSDR["DisplayName"].Equals(DBNull.Value))
+                        {
+                            entUser.DisplayName = objSDR["DisplayName"].ToString().Trim();
+                        }
+                        if (!objSDR["Email"].Equals(DBNull.Value))
+                        {
+                            entUser.Email = objSDR["Email"].ToString().Trim();
+                        }
+                        if (!objSDR["MobileNo"].Equals(DBNull.Value))
+                        {
+                            entUser.MobileNo = objSDR["MobileNo"].ToString().Trim();
+                        }
+                        if (!objSDR["Address"].Equals(DBNull.Value))
+                        {
+                            entUser.Address = objSDR["Address"].ToString().Trim();
+                        }
+                        break;
+                    }
+                }
+                #endregion Get data and validate user
+
+                return entUser;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+            catch (Exception ex)
+            {
+                _Message = ex.Message;
+                return null;
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion Select By PK
 
         #region Insert
         public bool Insert(UserENT entUser)
@@ -180,7 +252,7 @@ namespace AddressBook.DAL
                 objCmd.Parameters.AddWithValue("@MobileNo", entUser.MobileNo);
                 #endregion Create Command and Set Parameters
 
-                objCmd.CommandText = "PR_User_Update";
+                objCmd.CommandText = "PR_User_UpdateByPK";
                 objCmd.ExecuteNonQuery();
 
                 if (objConn.State == ConnectionState.Open)

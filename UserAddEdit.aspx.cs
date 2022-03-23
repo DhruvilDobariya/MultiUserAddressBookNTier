@@ -139,75 +139,40 @@ public partial class UserAddEdit : System.Web.UI.Page
     #region FillControlls
     private void FillControlls()
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        UserBAL userBAL = new UserBAL();
+        UserENT entUser = userBAL.SelectByPK(Convert.ToInt32(Session["UserID"]));
 
-        try
+        if(entUser != null)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_User_SelectByPK", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-            #region Get data and set data
-            if (objSDR.HasRows)
+            if (!entUser.UserName.IsNull)
             {
-                while (objSDR.Read())
-                {
-                    if (!objSDR["DisplayName"].Equals(DBNull.Value))
-                    {
-                        txtName.Text = objSDR["DisplayName"].ToString();
-                    }
-                    if (!objSDR["MobileNo"].Equals(DBNull.Value))
-                    {
-                        txtMobileNo.Text = objSDR["MobileNo"].ToString();
-                    }
-                    if (!objSDR["Email"].Equals(DBNull.Value))
-                    {
-                        txtEmail.Text = objSDR["Email"].ToString();
-                    }
-                    if (!objSDR["Address"].Equals(DBNull.Value))
-                    {
-                        txtAddress.Text = objSDR["Address"].ToString();
-                    }
-                    if (!objSDR["UserName"].Equals(DBNull.Value))
-                    {
-                        txtUserName.Text = objSDR["UserName"].ToString();
-                    }
-                    if (!objSDR["Password"].Equals(DBNull.Value))
-                    {
-                        txtPassword.Text = objSDR["Password"].ToString();
-                    }
-                    if (!objSDR["Password"].Equals(DBNull.Value))
-                    {
-                        txtRetypePassword.Text = objSDR["Password"].ToString();
-                    }
-                    break;
-                }
+                txtUserName.Text = entUser.UserName.Value.ToString();
             }
-            else
+            if (!entUser.Password.IsNull)
             {
-                lblMsg.Text = "User Not Found!";
+                txtPassword.Text = entUser.Password.Value.ToString();
+                txtRetypePassword.Text = entUser.Password.ToString();
             }
-            #endregion Get data and set data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            if (!entUser.DisplayName.IsNull)
+            {
+                txtName.Text = entUser.DisplayName.Value.ToString();
+            }
+            if (!entUser.Email.IsNull)
+            {
+                txtEmail.Text = entUser.Email.Value.ToString();
+            }
+            if (!entUser.MobileNo.IsNull)
+            {
+                txtMobileNo.Text = entUser.MobileNo.Value.ToString();
+            }
+            if (!entUser.Address.IsNull)
+            {
+                txtAddress.Text = entUser.Address.Value.ToString();
+            }
         }
-        catch (Exception ex)
+        else
         {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = userBAL.Message;
         }
     }
     #endregion FillControlls
