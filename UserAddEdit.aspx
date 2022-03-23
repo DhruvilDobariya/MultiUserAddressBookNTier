@@ -7,16 +7,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" 
-    content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="viewport"
+        content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
     <title></title>
 
     <link rel="icon" type="image/x-icon" href="~/Content/image/favicon.png">
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/Content/css/all.min.css" />
+    <link href="~/Content/css/toastr.min.css" rel="stylesheet">
+    <script src="/Content/js/jquery-3.6.0.min.js"></script>
+    <script src="/Content/js/toastr.min.js"></script>
 </head>
 <body>
     <form id="form1" runat="server">
+        <div>
+            <% if (Session["Success"] != null)
+                {  %>
+            <script type="text/javascript">
+                toastr.success("<%= Session["Success"] %>");
+            </script>
+            <% Session["Success"] = null;
+                } %>
+            <% if (Session["Error"] != null)
+                {  %>
+            <script type="text/javascript">
+                toastr.error("<%= Session["Error"] %>");
+            </script>
+            <% Session["Error"] = null;
+                } %>
+        </div>
         <div class="container mt-5 border p-4">
             <div>
                 <h2>
@@ -63,7 +82,7 @@
                         <asp:CompareValidator ID="cvRetypePassword" runat="server" ErrorMessage="Password and Retype Password Not Same" ControlToCompare="txtPassword" ControlToValidate="txtRetypePassword" Display="Dynamic" ForeColor="Red" ValidationGroup="Login"></asp:CompareValidator>
                     </div>
                     <div>
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-gradient mx-1 my-2" Text="Submit" OnClick="btnSubmit_Click" ValidationGroup="Login"/>
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-gradient mx-1 my-2" Text="Submit" OnClick="btnSubmit_Click" ValidationGroup="Login" />
                         <asp:LinkButton runat="server" ID="btnBack" CssClass="btn btn-danger mx-1 my-2" OnClick="btnBack_Click">Back</asp:LinkButton>
                         <asp:Label ID="lblMsg" runat="server"></asp:Label>
                     </div>

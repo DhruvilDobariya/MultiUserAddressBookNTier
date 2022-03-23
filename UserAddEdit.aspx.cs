@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using AddressBook.ENT;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -89,65 +91,49 @@ public partial class UserAddEdit : System.Web.UI.Page
             strEmail = txtEmail.Text.Trim();
         #endregion Set local variable
 
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
+        UserENT entUser = new UserENT()
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
+            UserName = strUserName,
+            Password = strPassword,
+            Address = strAddress,
+            DisplayName = strDisplayName,
+            Email = strEmail,
+            MobileNo = strMobileNo
+        };
+        
 
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@UserName", strUserName);
-            objCmd.Parameters.AddWithValue("@Password", strPassword);
-            objCmd.Parameters.AddWithValue("@DisplayName", strDisplayName);
-            objCmd.Parameters.AddWithValue("@Address", strAddress);
-            objCmd.Parameters.AddWithValue("@Email", strEmail);
-            objCmd.Parameters.AddWithValue("@MobileNo", strMobileNo);
-            #endregion Create Command and Set Parameters
-            if (RouteData.Values["UserID"] != null)
+        if (RouteData.Values["UserID"] != null)
+        {
+            #region Update record
+            UserBAL userBAL = new UserBAL();
+            entUser.UserID = Convert.ToInt32(RouteData.Values["UserID"]);
+            if (userBAL.Update(entUser))
             {
-                #region Update record
-                objCmd.CommandText = "PR_User_UpdateByPK";
-                if (Session["UserID"] != null)
-                    objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-                objCmd.ExecuteNonQuery();
-                Response.Redirect("~/AdminPanel/Home");
-                #endregion Update record
+                Session["Success"] = "User updated successfully";
+                Response.Redirect("~/AdminPanel/Home", true);
             }
             else
             {
-                #region Add record
-                objCmd.CommandText = "PR_User_Insert";
-                objCmd.ExecuteNonQuery();
-                Response.Redirect("~/Login.aspx");
-                #endregion Add record
+                Session["Error"] = userBAL.Message;
             }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
+            
+            #endregion Update record
         }
-        catch (Exception ex)
+        else
         {
-            if (ex.Message.Contains("Cannot insert duplicate key row in object 'dbo.User' with unique index 'IX_User'"))
+            #region Add record
+            UserBAL userBAL = new UserBAL();
+            if (userBAL.Insert(entUser))
             {
-                lblMsg.Text = "This Username already exist";
+                Response.Redirect("~/Login.aspx", true);
             }
             else
             {
-                lblMsg.Text = ex.Message;
+                Session["Error"] = userBAL.Message;
             }
+            
+            #endregion Add record
         }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-
     }
     #endregion Submit form
     #region FillControlls
@@ -237,4 +223,17 @@ public partial class UserAddEdit : System.Web.UI.Page
             Response.Redirect("~/Signin", true);
         }
     }
+
+    #region Clear Control
+    private void ClearControl()
+    {
+        txtUserName.Text = "";
+        txtPassword.Text = "";
+        txtRetypePassword.Text = "";
+        txtEmail.Text = "";
+        txtMobileNo.Text = "";
+        txtAddress.Text = "";
+        txtName.Text = "";
+    }
+    #endregion Clear Control
 }

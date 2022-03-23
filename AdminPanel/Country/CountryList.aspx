@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Content/AddressBook.master" AutoEventWireup="true" CodeFile="CountryList.aspx.cs" Inherits="AdminPanel_Country_Read" %>
 
 <asp:Content ID="cHead" ContentPlaceHolderID="cphHead" runat="Server">
+    
 </asp:Content>
 <asp:Content ID="cContent" ContentPlaceHolderID="cphContent" runat="Server">
     <div class="container border my-3 p-4">
@@ -47,5 +48,11 @@
             </Columns>
         </asp:GridView>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#<%= gvCountry.ClientID %>').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+            $('#<%= gvCountry.ClientID %>').DataTable();
+        });
+    </script>
 </asp:Content>
 

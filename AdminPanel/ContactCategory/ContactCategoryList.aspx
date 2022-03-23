@@ -46,5 +46,11 @@
             </Columns>
         </asp:GridView>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#<%= gvContactCategory.ClientID %>').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+            $('#<%= gvContactCategory.ClientID %>').DataTable();
+        });
+    </script>
 </asp:Content>
 

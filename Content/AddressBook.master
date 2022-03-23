@@ -14,7 +14,10 @@
     <link rel="icon" type="image/x-icon" href="~/Content/image/favicon.png">
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/css/toastr.min.css" rel="stylesheet">
+    <link href="~/Content/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <script src="/Content/js/jquery-3.6.0.min.js"></script>
+    <script src="/Content/js/jquery.dataTables.min.js"></script>
+    <script src="/Content/js/dataTables.bootstrap5.min.js"></script>
     <script src="/Content/js/toastr.min.js"></script>
     <asp:ContentPlaceHolder ID="cphHead" runat="server">
     </asp:ContentPlaceHolder>

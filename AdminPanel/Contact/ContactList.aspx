@@ -80,6 +80,11 @@
                 </Columns>
             </asp:GridView>
         </div>
-
+        <script type="text/javascript">
+        $(document).ready(function () {
+            $('#<%= gvContact.ClientID %>').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+            $('#<%= gvContact.ClientID %>').DataTable();
+        });
+        </script>
     </div>
 </asp:Content>

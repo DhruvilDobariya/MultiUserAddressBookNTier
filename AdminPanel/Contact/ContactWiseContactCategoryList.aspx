@@ -15,14 +15,26 @@
                 <asp:Label ID="lblMsg" runat="server"></asp:Label>
             </div>
         </div>
-        <div class="scrollmanu">
+        <div class="">
             <asp:GridView ID="gvContactWiseContactCategory" runat="server" AutoGenerateColumns="false">
                 <Columns>
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i>
+                            </asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="ContactCategoryName" HeaderText="Contact Category"/>
                 </Columns>
             </asp:GridView>
         </div>
-
+        <script type="text/javascript">
+        $(document).ready(function () {
+            $('#<%= gvContactWiseContactCategory.ClientID %>').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+            $('#<%= gvContactWiseContactCategory.ClientID %>').DataTable();
+        });
+        </script>
     </div>
 </asp:Content>
 

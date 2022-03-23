@@ -48,5 +48,11 @@
             </Columns>
         </asp:GridView>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#<%= gvState.ClientID %>').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+            $('#<%= gvState.ClientID %>').DataTable();
+        });
+    </script>
 </asp:Content>
 
