@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AddressBook.BAL;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -21,161 +22,65 @@ public static class CommonDropDownListMethods
     #region Country DropDown
     public static void FillCountryDropDown(DropDownList ddl, SqlInt32 UserId)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        CountryBAL countryBAL = new CountryBAL();
+        DataTable dt = countryBAL.SelectForDropDown(UserId);
 
-        try
+        if(dt.Rows.Count > 0)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Country_SelectForDropDownListUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            if (UserId.ToString() != null)
-                objCmd.Parameters.AddWithValue("@UserID", UserId);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            if (objSDR.HasRows)
-            {
-                ddl.DataSource = objSDR;
-                ddl.DataValueField = "CountryID";
-                ddl.DataTextField = "CountryName";
-                ddl.DataBind();
-            }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
-            ddl.Items.Insert(0, new ListItem("Select Country", "-1"));
+            ddl.DataSource = dt;
+            ddl.DataValueField = "CountryID";
+            ddl.DataTextField = "CountryName";
+            ddl.DataBind();
         }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-
     }
     #endregion Country DropDown
 
-    #region State DropDown
-    public static void FillStateDropDown(DropDownList ddl, SqlInt32 UserId, SqlInt32? CountryId)
+    #region State DropDown CountryID
+    public static void FillStateDropDownByCountryID(DropDownList ddl, SqlInt32 UserId, SqlInt32 CountryId)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        StateBAL stateBAL = new StateBAL();
+        DataTable dt = stateBAL.SelectForDropDownByCountryID(UserId, CountryId);
 
-        try
+        if (dt.Rows.Count > 0)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-
-            if (CountryId != null)
-            {
-                
-                objCmd.CommandText = "PR_State_SelectByCountryIDUserID";
-                if (CountryId != null)
-                    objCmd.Parameters.AddWithValue("@CountryID", CountryId);
-            }
-            else
-            {
-                objCmd.CommandText = "PR_State_SelectForDropDownListUserID";
-            }
-
-            if (UserId.ToString() != null)
-                objCmd.Parameters.AddWithValue("@UserID", UserId);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            if (objSDR.HasRows)
-            {
-                ddl.DataSource = objSDR;
-                ddl.DataValueField = "StateID";
-                ddl.DataTextField = "StateName";
-                ddl.DataBind();
-            }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
-            ddl.Items.Insert(0, new ListItem("Select State", "-1"));
+            ddl.DataSource = dt;
+            ddl.DataValueField = "StateID";
+            ddl.DataTextField = "StateName";
+            ddl.DataBind();
         }
-        catch (Exception ex)
+
+    }
+    #endregion State DropDown CountryID
+
+    #region State DropDown
+    public static void FillStateDropDownByCountryID(DropDownList ddl, SqlInt32 UserId)
+    {
+        StateBAL stateBAL = new StateBAL();
+        DataTable dt = stateBAL.SelectForDropDown(UserId);
+
+        if (dt.Rows.Count > 0)
         {
-            Message = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            ddl.DataSource = dt;
+            ddl.DataValueField = "StateID";
+            ddl.DataTextField = "StateName";
+            ddl.DataBind();
         }
 
     }
     #endregion State DropDown
 
     #region City DropDown
-    public static void FillCityDropDown(DropDownList ddl, SqlInt32 UserId, SqlInt32? StateId)
+    public static void FillCityDropDown(DropDownList ddl, SqlInt32 UserId, SqlInt32 StateId)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        CityBAL stateBAL = new CityBAL();
+        DataTable dt = stateBAL.SelectForDropDownByStateID(UserId, StateId);
 
-        try
+        if (dt.Rows.Count > 0)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-
-            if (StateId != null)
-            {
-                objCmd.CommandText = "PR_City_SelectByStateIDUserID";
-                if (StateId != null)
-                    objCmd.Parameters.AddWithValue("@StateID", StateId);
-            }
-            else
-            {
-                objCmd.CommandText = "PR_City_SelectForDropDownListUserID";
-            }
-
-            if (UserId.ToString() != null)
-                objCmd.Parameters.AddWithValue("@UserID", UserId);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            #endregion Create Command and Set Parameters
-
-            if (objSDR.HasRows)
-            {
-                ddl.DataSource = objSDR;
-                ddl.DataValueField = "CityID";
-                ddl.DataTextField = "CityName";
-                ddl.DataBind();
-            }
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
-            ddl.Items.Insert(0, new ListItem("Select City", "-1"));
-        }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            ddl.DataSource = dt;
+            ddl.DataValueField = "CityID";
+            ddl.DataTextField = "CityName";
+            ddl.DataBind();
         }
 
     }
@@ -184,43 +89,16 @@ public static class CommonDropDownListMethods
     #region Contact Category CheckBox
     public static void FillContactCategoryCheckBox(CheckBoxList chk, SqlInt32 UserId)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        ContactCategoryBAL stateBAL = new ContactCategoryBAL();
+        DataTable dt = stateBAL.SelectForDropDown(UserId);
 
-        try
+        if (dt.Rows.Count > 0)
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Bind Data
-            SqlCommand objCmd = new SqlCommand("PR_ContactCategory_SelectForDropDownListUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            if (UserId.ToString() != null)
-                objCmd.Parameters.AddWithValue("@UserID", UserId);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            if (objSDR.HasRows)
-            {
-                chk.DataSource = objSDR;
-                chk.DataValueField = "ContactCategoryID";
-                chk.DataTextField = "ContactCategoryName";
-                chk.DataBind();
-            }
-            #endregion Create Command and Bind Data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            chk.DataSource = dt;
+            chk.DataValueField = "ContactCategoryID";
+            chk.DataTextField = "ContactCategoryName";
+            chk.DataBind();
         }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-
     }
     #endregion Contact Category CheckBox
 }

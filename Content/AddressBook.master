@@ -19,6 +19,7 @@
     <script src="/Content/js/jquery.dataTables.min.js"></script>
     <script src="/Content/js/dataTables.bootstrap5.min.js"></script>
     <script src="/Content/js/toastr.min.js"></script>
+    <script src="/Content/js/sweetalert.min.js"></script>
     <asp:ContentPlaceHolder ID="cphHead" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -120,6 +121,6 @@
     <script src="/Content/js/bootstrap.bundle.min.js" type="text/javascript"></script>
     <script src="/Content/js/all.min.js" type="text/javascript"></script>
     
-    <script src="/Content/js/Custom.js" type="text/javascript"></script>
+    <script src="/Content/js/Custome.js" type="text/javascript"></script>
 </body>
 </html>

@@ -33,7 +33,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Delete">
                         <ItemTemplate>
-                            <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" CommandName="DeleteRecord" CommandArgument='<%# Eval("ContactID").ToString() %>'>
+                            <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" OnClientClick="return confirm('Are you sure, you want to delete contact?');" CommandName="DeleteRecord" CommandArgument='<%# Eval("ContactID").ToString() %>'>
                              <i class="fas fa-trash-alt"></i>
                             </asp:LinkButton>
                         </ItemTemplate>
@@ -65,7 +65,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Delete Image" ItemStyle-CssClass="text-center">
                         <ItemTemplate>
-                            <asp:LinkButton runat="server" ID="btnDeleteImg" CssClass="btn btn-danger" Enabled='<%# Convert.ToBoolean(("FilePath").ToString() != "")%>' CommandName="DeleteImage" CommandArgument='<%# Eval("ContactID").ToString() %>'>
+                            <asp:LinkButton runat="server" ID="btnDeleteImg" CssClass="btn btn-danger" Enabled='<%# Convert.ToBoolean(("FilePath").ToString() != "")%>' CommandName="DeleteImage" OnClientClick="return confirm('Are you sure, you want to delete image?');" CommandArgument='<%# Eval("ContactID").ToString() %>'>
                              <i class="fas fa-trash-alt"></i>
                             </asp:LinkButton>
                         </ItemTemplate>

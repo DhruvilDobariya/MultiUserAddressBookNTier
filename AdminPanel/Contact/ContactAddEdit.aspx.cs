@@ -33,30 +33,35 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
         }
     }
     #endregion Page Load
+
     #region Fill Contact Category CheckBoxList
     private void FillContactCategoryCheckBoxList()
     {
         CommonDropDownListMethods.FillContactCategoryCheckBox(chkContactCategory, Convert.ToInt32(Session["UserId"]));
     }
     #endregion Fill Contact Category CheckBoxList
+
     #region Fill City DropDown
     private void FillCityForDropDown()
     {
         CommonDropDownListMethods.FillCityDropDown(ddlCity, Convert.ToInt32(Session["UserID"]), Convert.ToInt32(ddlState.SelectedValue));
     }
     #endregion Fill City DropDown
+
     #region Fill State DropDown
     private void FillStateForDropDown()
     {
-        CommonDropDownListMethods.FillStateDropDown(ddlState, Convert.ToInt32(Session["UserID"]), Convert.ToInt32(ddlCountry.SelectedValue));
+        CommonDropDownListMethods.FillStateDropDownByCountryID(ddlState, Convert.ToInt32(Session["UserID"]), Convert.ToInt32(ddlCountry.SelectedValue));
     }
     #endregion Fill State DropDown
+
     #region Fill Country DropDown
     private void FillCountryDropDown()
     {
         CommonDropDownListMethods.FillCountryDropDown(ddlCountry, Convert.ToInt32(Session["UserID"]));
     }
     #endregion Fill Country DropDown
+
     #region Submit Form
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
@@ -268,6 +273,7 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
         }
     }
     #endregion Submit Form
+
     #region Fill Controlls
     private void FillControls(SqlInt32 Id)
     {

@@ -49,8 +49,8 @@ namespace AddressBook.BAL
         }
         #endregion Select By PK
 
-        #region Delete
-        public bool Delete(SqlInt32 ContactId, SqlInt32 UserId)
+        #region Delete By ContactId
+        public bool DeleteByCountryID(SqlInt32 ContactId, SqlInt32 UserId)
         {
             ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();
             if (ContactWiseContactCategoryDAL.DeleteContactWiseContactCategory(ContactId, UserId))
@@ -63,6 +63,22 @@ namespace AddressBook.BAL
                 return false;
             }
         }
-        #endregion Delete
+        #endregion Delete By ContactId
+
+        #region Delete By PK
+        public bool DeleteByPK(SqlInt32 ContactWiseContactCategoryID, SqlInt32 UserId)
+        {
+            ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();
+            if (ContactWiseContactCategoryDAL.DeleteContactWiseContactCategory(ContactWiseContactCategoryID, UserId))
+            {
+                return true;
+            }
+            else
+            {
+                this.Message = ContactWiseContactCategoryDAL.Message;
+                return false;
+            }
+        }
+        #endregion Delete By PK
     }
 }

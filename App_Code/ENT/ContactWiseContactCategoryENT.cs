@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Web;
 
@@ -30,6 +31,13 @@ namespace AddressBook.ENT
         {
             get { return _ContactCategory; }
             set { _ContactCategory = value; }
+        }
+
+        protected SqlString _SelecteOrNot;
+        public SqlString SelecteOrNot
+        {
+            get { return _SelecteOrNot; }
+            set { _SelecteOrNot = value; }
         }
     }
 }

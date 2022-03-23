@@ -32,7 +32,7 @@
                 </asp:TemplateField>
                  <asp:TemplateField HeaderText="Delete">
                     <ItemTemplate>
-                        <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" CommandName="DeleteRecord" CommandArgument='<%# Eval("ContactCategoryID").ToString() %>'>
+                        <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" OnClientClick="return confirm('Are you sure, you want to delete contact category?');" CommandName="DeleteRecord" CommandArgument='<%# Eval("ContactCategoryID").ToString() %>'>
                              <i class="fas fa-trash-alt"></i>
                         </asp:LinkButton>
                     </ItemTemplate>

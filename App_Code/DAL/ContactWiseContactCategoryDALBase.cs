@@ -224,5 +224,69 @@ namespace AddressBook.DAL
         }
         #endregion Delete ContactWiseContactCategory By Id
 
+        #region SelectOrNot
+        public ContactWiseContactCategoryENT SelectOrNot(SqlInt32 ContactID, SqlInt32 UserID)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+
+                #region Create Command and Set Parameters
+                SqlCommand objCmd = new SqlCommand("PR_ContactCategory_SelectOrNot", objConn);
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
+                objCmd.Parameters.AddWithValue("@ContactID", ContactID);
+                SqlDataReader objSDR = objCmd.ExecuteReader();
+                #endregion Create Command and Set Parameters
+
+                ContactWiseContactCategoryENT entContactWiseContactCategory = new ContactWiseContactCategoryENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["ContactCategoryID"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.ContactCategoryID = Convert.ToInt32(objSDR["ContactCategoryID"].ToString());
+                        }
+                        if (!objSDR["ContactCategoryName"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.ContactCategory.ContactCategoryName = objSDR["ContactCategoryName"].ToString();
+                        }
+                        if (!objSDR["SelectOrNot"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.SelecteOrNot = objSDR["SelectOrNot"].ToString();
+                        }
+                        if (!objSDR["ContactWiseContactCategoryID"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.ContactWiseContactCategoryID = Convert.ToInt32(objSDR["ContactWiseContactCategoryID"].ToString());
+                        }
+                    }
+                }
+
+                return entContactWiseContactCategory;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+
+                return entContactWiseContactCategory;
+            }
+            catch (Exception ex)
+            {
+                _Message = ex.Message;
+                return null;
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion SelectOrNot
+
     }
 }
