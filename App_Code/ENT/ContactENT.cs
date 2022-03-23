@@ -11,11 +11,39 @@ namespace AddressBook.ENT
 {
     public class ContactENT : ContactENTBase
     {
-        public ContactENT()
+        protected UserENT _User; 
+        public UserENT User
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            get{ return _User; }
+            set{ _User = value; }
+        }
+
+        protected CountryENT _Country;
+        public CountryENT Country
+        {
+            get { return _Country; }
+            set { _Country = value; }
+        }
+
+        protected StateENT _State; 
+        public StateENT State
+        {
+            get { return _State; }
+            set { _State = value; }
+        }
+
+        protected CityENT _City;
+        public CityENT City
+        {
+            get { return _City; }
+            set { _City = value; }
+        }
+
+        protected ICollection<ContactWiseContactCategoryENT> _ContactWiseContactCategories;
+        public ICollection<ContactWiseContactCategoryENT> ContactWiseContactCategories
+        {
+            get { return _ContactWiseContactCategories; }
+            set { _ContactWiseContactCategories = value; }
         }
     }
 }

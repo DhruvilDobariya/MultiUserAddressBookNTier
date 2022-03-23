@@ -45,6 +45,9 @@ namespace AddressBook.DAL
 
                 #region Get data and validate user
                 UserENT entUser = new UserENT();
+                /*List<StateENT> states = new List<StateENT>();
+                entUser.States = states;*/
+
                 if (objSDR.HasRows)
                 {
                     while (objSDR.Read())

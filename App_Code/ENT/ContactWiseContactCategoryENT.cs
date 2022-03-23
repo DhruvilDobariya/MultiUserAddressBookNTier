@@ -11,6 +11,20 @@ namespace AddressBook.ENT
 {
     public class ContactWiseContactCategoryENT : ContactWiseContactCategoryENTBase
     {
+        protected UserENT _User;
+        public UserENT User
+        {
+            get { return _User; }
+            set { _User = value; }
+        }
+
+        protected ContactENT _Contact;
+        public ContactENT Contact
+        {
+            get { return _Contact; }
+            set { _Contact = value; }
+        }
+
         protected ContactCategoryENT _ContactCategory;
         public ContactCategoryENT ContactCategory
         {

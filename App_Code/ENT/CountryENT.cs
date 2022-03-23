@@ -11,11 +11,25 @@ namespace AddressBook.ENT
 {
     public class CountryENT : CountryENTBase
     {
-        public CountryENT()
+        protected UserENT _User;
+        public UserENT User
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            get { return _User; }
+            set { _User = value; }
+        }
+
+        protected ICollection<StateENT> _States;
+        public ICollection<StateENT> State
+        {
+            get { return _States; }
+            set { _States = value; }
+        }
+
+        protected ICollection<ContactENT> _Contacts;
+        public ICollection<ContactENT> Contacts
+        {
+            get { return _Contacts; }
+            set { _Contacts = value; }
         }
     }
 }

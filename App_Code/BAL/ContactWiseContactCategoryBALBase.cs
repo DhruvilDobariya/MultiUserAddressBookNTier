@@ -42,7 +42,7 @@ namespace AddressBook.BAL
         #endregion Insert
 
         #region Select By PK
-        public DataTable SelectByPK(SqlInt32 ContactId, SqlInt32 UserId)
+        public ContactWiseContactCategoryENT SelectByPK(SqlInt32 ContactId, SqlInt32 UserId)
         {
             ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();
             return ContactWiseContactCategoryDAL.GetContactWiseContactCategoryById(ContactId, UserId);
