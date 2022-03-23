@@ -11,11 +11,11 @@ namespace AddressBook.ENT
 {
     public class ContactWiseContactCategoryENT : ContactWiseContactCategoryENTBase
     {
-        public ContactWiseContactCategoryENT()
+        protected ContactCategoryENT _ContactCategory;
+        public ContactCategoryENT ContactCategory
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            get { return _ContactCategory; }
+            set { _ContactCategory = value; }
         }
     }
 }

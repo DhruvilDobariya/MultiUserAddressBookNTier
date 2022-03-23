@@ -26,7 +26,7 @@ namespace AddressBook.DAL
         #endregion Local Variable
 
         #region Get ContactWiseContactCategory By ContactId
-        public DataTable GetContactWiseContactCategoryById(SqlInt32 ContactID, SqlInt32 UserId)
+        public ContactWiseContactCategoryENT GetContactWiseContactCategoryById(SqlInt32 ContactID, SqlInt32 UserId)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -40,14 +40,31 @@ namespace AddressBook.DAL
                 SqlCommand objCmd = new SqlCommand();
                 objCmd.Connection = objConn;
                 objCmd.CommandType = CommandType.StoredProcedure;
-                objCmd.CommandText = "PR_ContactWiseContactCategory_SelectByPKUserID";
+                objCmd.CommandText = "PR_ContactWiseContactCategory_SelectByContactIDUserID";
                 objCmd.Parameters.AddWithValue("@ContactID", ContactID);
                 objCmd.Parameters.AddWithValue("@UserID", UserId);
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
-                dt.Load(objSDR);
-                return dt;
+                ContactWiseContactCategoryENT entContactWiseContactCategory = new ContactWiseContactCategoryENT();
+
+                if (objSDR.HasRows)
+                {
+                    while (objSDR.Read())
+                    {
+                        if (!objSDR["ContactWiseContactCategoryID"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.ContactWiseContactCategoryID = Convert.ToInt32(objSDR["ContactWiseContactCategoryID"].ToString());
+                        }
+                        if (!objSDR["ContactCategoryName"].Equals(DBNull.Value))
+                        {
+                            entContactWiseContactCategory.ContactCategory.ContactCategoryName = objSDR["ContactCategory"].ToString();
+                        }
+                        break;
+                    }
+                }
+
+                return entContactWiseContactCategory;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();
@@ -117,8 +134,53 @@ namespace AddressBook.DAL
         }
         #endregion Insert ContactWiseContactCategory
 
-        #region Delete ContactWiseContactCategory By Id
+        #region Delete ContactWiseContactCategory By ContactId
         public bool DeleteContactWiseContactCategory(SqlInt32 ContactID, SqlInt32 UserID)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+
+                #region Create Command and Set Parameters
+                SqlCommand objCmd = new SqlCommand("PR_ContactWiseContactCategory_DeleteByContactIDUserID", objConn);
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.Parameters.AddWithValue("@ContactID", ContactID);
+                objCmd.Parameters.AddWithValue("@UserID", UserID);
+                objCmd.ExecuteNonQuery();
+                #endregion Create Command and Set Parameters
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    _Message = "This ContactWiseContactCategory contain some records, So please delete these record, If you want to delete this ContactWiseContactCategory.";
+                    return false;
+                }
+                else
+                {
+                    _Message = ex.Message;
+                    return false;
+                }
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion Delete ContactWiseContactCategory By ContactId
+
+        #region Delete ContactWiseContactCategory By Id
+        public bool DeleteContactWiseContactCategoryByPK(SqlInt32 ContactWiseContactCategoryID, SqlInt32 UserID)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -131,7 +193,7 @@ namespace AddressBook.DAL
                 #region Create Command and Set Parameters
                 SqlCommand objCmd = new SqlCommand("PR_ContactWiseContactCategory_DeleteByPKUserID", objConn);
                 objCmd.CommandType = CommandType.StoredProcedure;
-                objCmd.Parameters.AddWithValue("@ContactID", ContactID);
+                objCmd.Parameters.AddWithValue("@ContactID", ContactWiseContactCategoryID);
                 objCmd.Parameters.AddWithValue("@UserID", UserID);
                 objCmd.ExecuteNonQuery();
                 #endregion Create Command and Set Parameters
