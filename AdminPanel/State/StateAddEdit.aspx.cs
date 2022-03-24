@@ -23,7 +23,7 @@ public partial class AdminPanel_State_StateAddEdit : System.Web.UI.Page
             {
                 lblTitle.Text = "Edit State";
                 btnSubmit.Text = "Edit";
-                FillControlls(Convert.ToInt32(RouteData.Values["StateID"]));
+                FillControlls(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["StateID"].ToString())));
             }
         }
     }
@@ -98,10 +98,10 @@ public partial class AdminPanel_State_StateAddEdit : System.Web.UI.Page
         entState.CountryID = strCountryID;
         entState.UserID = Convert.ToInt32(Session["UserID"]);
 
-        if(RouteData.Values["StateID"] != null)
+        if(EncryptionDecryption.Decode(RouteData.Values["StateID"].ToString()) != null)
         {
             #region Update
-            entState.StateID = Convert.ToInt32(RouteData.Values["StateID"]);
+            entState.StateID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["StateID"].ToString()));
             if (stateBAL.Update(entState))
             {
                 Session["Success"] = "State Updated Successfully";

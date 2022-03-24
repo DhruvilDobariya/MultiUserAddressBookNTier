@@ -22,7 +22,8 @@ public partial class AdminPanel_ContactCategory_ContactCategoryAddEdit : System.
             {
                 lblTitle.Text = "Edit Contact Category";
                 btnSubmit.Text = "Edit";
-                FillControlls(Convert.ToInt32(RouteData.Values["ContactCategoryID"]));
+                FillControlls(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactCategoryID"].ToString())));
+                
             }
         }
     }
@@ -44,19 +45,16 @@ public partial class AdminPanel_ContactCategory_ContactCategoryAddEdit : System.
         if (txtContactCategory.Text.Trim() != "")
             strContactCategory = txtContactCategory.Text.Trim();
         #endregion Set local variable
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
 
         ContactCategoryBAL contactCategoryBAL = new ContactCategoryBAL();
         ContactCategoryENT entContactCategory = new ContactCategoryENT();
         entContactCategory.ContactCategoryName = strContactCategory;
         entContactCategory.UserID = Convert.ToInt32(Session["UserID"]);
 
-        if(RouteData.Values["ContactCategoryID"] != null)
+        if(EncryptionDecryption.Decode(RouteData.Values["ContactCategoryID"].ToString()) != null)
         {
             #region Update
-            entContactCategory.ContactCategoryID = Convert.ToInt32(RouteData.Values["ContactCategoryID"]);
+            entContactCategory.ContactCategoryID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactCategoryID"].ToString()));
             if (contactCategoryBAL.Update(entContactCategory))
             {
                 Session["Success"] = "Contact Category Updated Successfully";

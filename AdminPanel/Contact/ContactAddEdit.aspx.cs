@@ -26,7 +26,8 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
             {
                 lblTitle.Text = "Edit Contact";
                 btnSubmit.Text = "Edit";
-                FillControls(Convert.ToInt32(RouteData.Values["ContactID"]));
+                FillControls(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString())));
+                
                 FillStateForDropDown();
                 FillCityForDropDown();
             }
@@ -197,9 +198,9 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
             UserID = Convert.ToInt32(Session["UserID"])
         };
 
-        if(RouteData.Values["ContactID"] != null)
+        if(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString()) != null)
         {
-            entContact.ContactID = Convert.ToInt32(RouteData.Values["ContactID"]);
+            entContact.ContactID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString()));
 
             string FileType = Path.GetExtension(fuFile.FileName).ToLower();
             if (fuFile.HasFile)
@@ -212,9 +213,9 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
             }
             if (contactBAL.Update(entContact))
             {
-                UploadImage(Convert.ToInt32(RouteData.Values["ContactID"]), "Image");
-                DeleteContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
-                AddContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
+                UploadImage(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString())), "Image");
+                DeleteContactCategory(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString())));
+                AddContactCategory(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["ContactID"].ToString())));
                 Session["Success"] = "Contact updated successfully";
                 Response.Redirect("~/AdminPanel/Contact/List");
             }

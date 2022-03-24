@@ -18,7 +18,7 @@ public partial class UserAddEdit : System.Web.UI.Page
         lblMsg.Text = "";
         if (!Page.IsPostBack)
         {
-            if (RouteData.Values["UserID"] != null && RouteData.Values["UserID"].ToString() == Session["UserID"].ToString())
+            if (RouteData.Values["UserID"] != null && EncryptionDecryption.Decode(RouteData.Values["UserID"].ToString()).ToString() == Session["UserID"].ToString())
             {
                 FillControlls();
                 btnSubmit.Text = "Edit";
@@ -102,11 +102,11 @@ public partial class UserAddEdit : System.Web.UI.Page
         };
         
 
-        if (RouteData.Values["UserID"] != null)
+        if (EncryptionDecryption.Decode(RouteData.Values["UserID"].ToString()) != null)
         {
             #region Update record
             UserBAL userBAL = new UserBAL();
-            entUser.UserID = Convert.ToInt32(RouteData.Values["UserID"]);
+            entUser.UserID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["UserID"].ToString()));
             if (userBAL.Update(entUser))
             {
                 Session["Success"] = "User updated successfully";

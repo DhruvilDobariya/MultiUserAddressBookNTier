@@ -25,7 +25,7 @@
             <Columns>
                 <asp:TemplateField HeaderText="Edit">
                     <ItemTemplate>
-                        <asp:HyperLink runat="server" ID="hlEdit" CssClass="btn btn-gradient" NavigateUrl='<%# "~/AdminPanel/City/Edit/" + Eval("CityID").ToString().Trim() %>'>
+                        <asp:HyperLink runat="server" ID="hlEdit" CssClass="btn btn-gradient" NavigateUrl='<%# "~/AdminPanel/City/Edit/" + EncryptionDecryption.Encode(Eval("CityID").ToString().Trim()) %>'>
                             <i class="fas fa-edit"></i>
                         </asp:HyperLink>
                     </ItemTemplate>

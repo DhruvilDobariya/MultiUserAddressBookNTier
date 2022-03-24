@@ -23,7 +23,7 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
             {
                 lblTitle.Text = "Edit City";
                 btnSubmit.Text = "Edit";
-                FillControlls(Convert.ToInt32(RouteData.Values["CityID"]));
+                FillControlls(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["CityID"].ToString())));
             }
         }
     }
@@ -80,10 +80,10 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
         entCity.STDCode = strSTDCode;
         entCity.UserID = Convert.ToInt32(Session["UserID"]);
 
-        if(RouteData.Values["CityID"] != null)
+        if(EncryptionDecryption.Decode(RouteData.Values["CityID"].ToString()) != null)
         {
             #region Update
-            entCity.CityID = Convert.ToInt32(RouteData.Values["CityID"]);
+            entCity.CityID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["CityID"].ToString()));
             if (cityBAL.Update(entCity))
             {
                 Session["Success"] = "City updated successfully";

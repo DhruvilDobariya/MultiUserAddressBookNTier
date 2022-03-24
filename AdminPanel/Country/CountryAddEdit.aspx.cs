@@ -22,7 +22,7 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
             {
                 btnSubmit.Text = "Edit";
                 lblTitle.Text = "Edit Country";
-                FillControlls(Convert.ToInt32(RouteData.Values["CountryID"]));
+                FillControlls(Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["CountryID"].ToString())));
             }
         }
     }
@@ -63,10 +63,10 @@ public partial class AdminPanel_Country_CountryAddEdit : System.Web.UI.Page
         entCountry.UserID = Convert.ToInt32(Session["UserID"]);
         CountryBAL countryBAL = new CountryBAL();
 
-        if(RouteData.Values["CountryID"] != null)
+        if(EncryptionDecryption.Decode(RouteData.Values["CountryID"].ToString()) != null)
         {
             #region Update
-            entCountry.CountryID = Convert.ToInt32(RouteData.Values["CountryID"]);
+            entCountry.CountryID = Convert.ToInt32(EncryptionDecryption.Decode(RouteData.Values["CountryID"].ToString()));
             if (countryBAL.Update(entCountry))
             {
                 Session["Success"] = "Country Updated Successfully";
