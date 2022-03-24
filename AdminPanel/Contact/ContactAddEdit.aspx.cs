@@ -177,100 +177,79 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
             strAddress = txtAddress.Text.Trim();
 
         #endregion Set local variable
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+
+        ContactBAL contactBAL = new ContactBAL();
+        ContactENT entContact = new ContactENT()
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
+            ContactName = strContact,
+            CountryID = strCountryID,
+            StateID = strStateID,
+            CityID = strCityID,
+            ContactNo = strContactNo,
+            WhatsappNo = strWhatsappNo,
+            BirthDate = strBirthDate,
+            Email = strEmil,
+            Age = strAge,
+            BloodGroup = strBloodGroup,
+            FacebookID = strFacebook,
+            LinkedinID = strLinkedin,
+            Address = strAddress,
+            UserID = Convert.ToInt32(Session["UserID"])
+        };
 
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = objConn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactName", strContact);
-            objCmd.Parameters.AddWithValue("@CityID", strCityID);
-            objCmd.Parameters.AddWithValue("@StateID", strStateID);
-            objCmd.Parameters.AddWithValue("@CountryID", strCountryID);
-            objCmd.Parameters.AddWithValue("@ContactNo", strContactNo);
-            objCmd.Parameters.AddWithValue("@WhatsappNo", strWhatsappNo);
-            objCmd.Parameters.AddWithValue("@BirthDate", strBirthDate);
-            objCmd.Parameters.AddWithValue("@Email", strEmil);
-            objCmd.Parameters.AddWithValue("@Age", strAge);
-            objCmd.Parameters.AddWithValue("@BloodGroup", strBloodGroup);
-            objCmd.Parameters.AddWithValue("@FacebookID", strFacebook);
-            objCmd.Parameters.AddWithValue("@LinkedInID", strLinkedin);
-            objCmd.Parameters.AddWithValue("@Address", strAddress);
+        if(RouteData.Values["ContactID"] != null)
+        {
+            entContact.ContactID = Convert.ToInt32(RouteData.Values["ContactID"]);
 
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            #endregion Create Command and Set Parameters
-
-
-            if (RouteData.Values["ContactID"] != null)
+            string FileType = Path.GetExtension(fuFile.FileName).ToLower();
+            if (fuFile.HasFile)
             {
-                #region Update record
-                objCmd.CommandText = "PR_Contact_UpdateByPKUserID";
-                objCmd.Parameters.AddWithValue("@ContactID", Convert.ToInt32(RouteData.Values["ContactID"]));
-                objCmd.ExecuteNonQuery();
-                string FileType = Path.GetExtension(fuFile.FileName).ToLower();
-                if (fuFile.HasFile)
+                if (FileType != ".jpge" && FileType != ".jpg" && FileType != ".png" && FileType != ".gif")
                 {
-                    if (FileType == ".jpge" || FileType == ".jpg" || FileType == ".png" || FileType == ".gif")
-                    {
-                        UploadImage(Convert.ToInt32(RouteData.Values["ContactID"]), "Image");
-                    }
-                    else
-                    {
-                        lblMsg.Text = "Please Upload Valid File(File must have .jpg or .jpge or .png or .gif extention).";
-                        return;
-                    }
+                    lblMsg.Text = "Please Upload Valid File(File must have .jpg or .jpge or .png or .gif extention).";
+                    return;
                 }
+            }
+            if (contactBAL.Update(entContact))
+            {
+                UploadImage(Convert.ToInt32(RouteData.Values["ContactID"]), "Image");
                 DeleteContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
                 AddContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
+                Session["Success"] = "Contact updated successfully";
                 Response.Redirect("~/AdminPanel/Contact/List");
-                #endregion Update record
             }
             else
             {
-                #region Add record
-                objCmd.CommandText = "PR_Contact_InsertUserID";
-                objCmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Direction = ParameterDirection.Output;
-                objCmd.ExecuteNonQuery();
-                ContactID = Convert.ToInt32(objCmd.Parameters["@ContactID"].Value);
-                string FileType = Path.GetExtension(fuFile.FileName).ToLower();
-                if (fuFile.HasFile)
+                Session["Error"] = contactBAL.Message;
+            }
+            
+        }
+        else
+        {
+            string FileType = Path.GetExtension(fuFile.FileName).ToLower();
+            if (fuFile.HasFile)
+            {
+                if (FileType != ".jpge" && FileType != ".jpg" && FileType != ".png" && FileType != ".gif")
                 {
-                    if (FileType == ".jpge" || FileType == ".jpg" || FileType == ".png" || FileType == ".gif")
-                    {
-                        UploadImage(ContactID, "Image");
-                    }
-                    else
-                    {
-                        lblMsg.Text = "Please Upload Valid File(File must have .jpg or .jpge or .png or .gif extention).";
-                        return;
-                    }
+                    lblMsg.Text = "Please Upload Valid File(File must have .jpg or .jpge or .png or .gif extention).";
+                    return;
                 }
-                AddContactCategory(ContactID);
-                //lblMsg.Text = "Contact Added Successfully";
-                ClearControls();
-                
-                #endregion Add record
             }
 
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            ContactID = contactBAL.Insert(entContact);
+            if (ContactID > 0)
+            {
+                UploadImage(ContactID, "Image");
+                AddContactCategory(ContactID);
+                Session["Success"] = "Contact added successfully";
+                ClearControls();
+            }
+            else
+            {
+                Session["Error"] = contactBAL.Message;
+            }
+        }
 
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
     }
     #endregion Submit Form
 
@@ -396,55 +375,24 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
     #endregion Clear Controls
 
     #region Upload Image
-    private void UploadImage(SqlInt32 Id, string FileExtention)
+    private void UploadImage(SqlInt32 Id, string FileType)
     {
         SqlString strFilePath = SqlString.Null;
 
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        #region Image Upload
+        strFilePath = "~/UserContent/" + Id + ".jpg";
+        if (!Directory.Exists(Server.MapPath("~/UserContent/")))
         {
-
-
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Image Upload
-            strFilePath = "~/UserContent/" + Id + ".jpg";
-            if (!Directory.Exists(Server.MapPath("~/UserContent/")))
-            {
-                Directory.CreateDirectory(Server.MapPath("~/UserContent/"));
-            }
-            fuFile.SaveAs(Server.MapPath("~/UserContent/" + Id + ".jpg"));
-            long length = new FileInfo(Server.MapPath(strFilePath.ToString())).Length;
-            #endregion Image Upload
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Contact_UpdateImagePathByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            objCmd.Parameters.AddWithValue("@FilePath", strFilePath);
-            objCmd.Parameters.AddWithValue("@FileType", Convert.ToString(FileExtention));
-            objCmd.Parameters.AddWithValue("@FileSize", Convert.ToString(length));
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-
-            objCmd.ExecuteNonQuery();
-            #endregion Create Command and Set Parameters
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
+            Directory.CreateDirectory(Server.MapPath("~/UserContent/"));
         }
-        catch (Exception ex)
+        fuFile.SaveAs(Server.MapPath("~/UserContent/" + Id + ".jpg"));
+        long length = new FileInfo(Server.MapPath(strFilePath.ToString())).Length;
+        #endregion Image Upload
+
+        ContactBAL contactBAL = new ContactBAL();
+        if(!contactBAL.UploadImage(Id, Convert.ToInt32(Session["UserID"]), strFilePath, FileType, length.ToString()))
         {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactBAL.Message;
         }
     }
     #endregion Upload Image
@@ -452,47 +400,27 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
     #region Add Contact Category
     private void AddContactCategory(SqlInt32 Id)
     {
+        ContactWiseContactCategoryBAL contactWiseContactCategoryBAL = new ContactWiseContactCategoryBAL();
+        List<ContactWiseContactCategoryENT> contactWiseContactCategories = new List<ContactWiseContactCategoryENT>();
 
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        foreach(ListItem item in chkContactCategory.Items)
         {
-
-
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            foreach (ListItem item in chkContactCategory.Items)
+            if (item.Selected)
             {
-                if (item.Selected)
+                ContactWiseContactCategoryENT contactWiseContactCategoryENT = new ContactWiseContactCategoryENT()
                 {
-                    #region Create Command and Set Parameter
-                    SqlCommand objCmd = new SqlCommand("PR_ContactWiseContactCategory_InsertUserID", objConn);
-                    objCmd.CommandType = CommandType.StoredProcedure;
-                    objCmd.Parameters.AddWithValue("@ContactCategoryID", Convert.ToInt32(item.Value));
-                    if (Session["UserID"] != null)
-                        objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-                    objCmd.Parameters.AddWithValue("@ContactID", Id);
-                    objCmd.ExecuteNonQuery();
-                    #endregion Create Command and Set Parameter
-                }
+                    ContactID = Id,
+                    ContactCategoryID = Convert.ToInt32(item.Value),
+                    UserID = Convert.ToInt32(Session["UserID"])
+                };
+
+                contactWiseContactCategories.Add(contactWiseContactCategoryENT);
             }
-
-            lblMsg.Text = "Contact Added Successfully";
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
         }
-        catch (Exception ex)
+
+        if (!contactWiseContactCategoryBAL.Insert(contactWiseContactCategories))
         {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactWiseContactCategoryBAL.Message;
         }
     }
     #endregion Add Contact Category
@@ -500,40 +428,10 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
     #region Delete Contact Category
     private void DeleteContactCategory(SqlInt32 Id)
     {
-
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        ContactWiseContactCategoryBAL contactWiseContactCategoryBAL = new ContactWiseContactCategoryBAL();
+        if(!contactWiseContactCategoryBAL.DeleteByCountryID(Id, Convert.ToInt32(Session["UserID"])))
         {
-
-
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameter
-            SqlCommand objCmd = new SqlCommand("PR_ContactWiseContactCategory_DeleteByContactIDUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactId", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            #endregion Create Command and Set Parameter
-
-            lblMsg.Text = "Contact Deleted Successfully!";
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactWiseContactCategoryBAL.Message;
         }
     }
     #endregion Delete Contact Category
@@ -541,48 +439,22 @@ public partial class AdminPanel_Contact_ContactAddEdit : System.Web.UI.Page
     #region Fill Contact Category CheckBoxs
     private void FillContactCategoryCheckBoxs(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        ContactWiseContactCategoryBAL contactWiseContactCategoryBAL = new ContactWiseContactCategoryBAL();
+        List<ContactWiseContactCategoryENT> contactWiseContactCategories = contactWiseContactCategoryBAL.SelectOrNot(Id, Convert.ToInt32(Session["UserID"]));
+
+        if(contactWiseContactCategories != null)
         {
-
-
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            SqlCommand objCmd = new SqlCommand("PR_ContactCategory_SelectOrNot", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-
-            if (objSDR.HasRows)
+            foreach(var contactWiseContactCategory in contactWiseContactCategories)
             {
-                while (objSDR.Read())
+                if(contactWiseContactCategory.SelecteOrNot.Value.ToString() == "Selected")
                 {
-                    if(objSDR["SelectOrNot"].ToString() == "Selected")
-                    {
-                        chkContactCategory.Items.FindByValue(objSDR["ContactCategoryID"].ToString()).Selected = true;
-                    }
-                    
+                    chkContactCategory.Items.FindByValue(contactWiseContactCategory.ContactCategoryID.ToString()).Selected = true;
                 }
             }
-           
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
         }
-        catch (Exception ex)
+        else
         {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactWiseContactCategoryBAL.Message;
         }
     }
     #endregion Fill Contact Category CheckBoxs

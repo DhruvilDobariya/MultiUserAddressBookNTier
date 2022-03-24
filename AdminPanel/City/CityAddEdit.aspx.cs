@@ -31,7 +31,7 @@ public partial class AdminPanel_City_CityAddEdit : System.Web.UI.Page
     #region Fill State
     private void FillStateForDropDown()
     {
-        CommonDropDownListMethods.FillStateDropDown(ddlState, Convert.ToInt32(Session["UserID"]),null);
+        CommonDropDownListMethods.FillStateDropDown(ddlState, Convert.ToInt32(Session["UserID"]));
     }
     #endregion Fill State
     #region Submit Form

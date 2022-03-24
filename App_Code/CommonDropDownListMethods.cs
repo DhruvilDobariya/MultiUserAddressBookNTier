@@ -32,6 +32,8 @@ public static class CommonDropDownListMethods
             ddl.DataTextField = "CountryName";
             ddl.DataBind();
         }
+
+        ddl.Items.Insert(0, new ListItem("Please Enter Country", "-1", false));
     }
     #endregion Country DropDown
 
@@ -49,11 +51,12 @@ public static class CommonDropDownListMethods
             ddl.DataBind();
         }
 
+        ddl.Items.Insert(0, new ListItem("Please Enter State", "-1", false));
     }
     #endregion State DropDown CountryID
 
     #region State DropDown
-    public static void FillStateDropDownByCountryID(DropDownList ddl, SqlInt32 UserId)
+    public static void FillStateDropDown(DropDownList ddl, SqlInt32 UserId)
     {
         StateBAL stateBAL = new StateBAL();
         DataTable dt = stateBAL.SelectForDropDown(UserId);
@@ -66,6 +69,7 @@ public static class CommonDropDownListMethods
             ddl.DataBind();
         }
 
+        ddl.Items.Insert(0, new ListItem("Please Enter State", "-1", false));
     }
     #endregion State DropDown
 
@@ -83,6 +87,7 @@ public static class CommonDropDownListMethods
             ddl.DataBind();
         }
 
+        ddl.Items.Insert(0, new ListItem("Please Enter City", "-1", false));
     }
     #endregion City DropDown 
 

@@ -86,7 +86,7 @@ namespace AddressBook.DAL
         #endregion Get ContactWiseContactCategory By ContactId
 
         #region Insert ContactWiseContactCategory
-        public bool InsertContactWiseContactCategory(ContactWiseContactCategoryENT entContactWiseContactCategory)
+        public bool InsertContactWiseContactCategory(List<ContactWiseContactCategoryENT> contactWiseContactCategories)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -96,17 +96,20 @@ namespace AddressBook.DAL
                 if (objConn.State != ConnectionState.Open)
                     objConn.Open();
 
-                #region Create Command and Set Parameters
-                SqlCommand objCmd = new SqlCommand();
-                objCmd.Connection = objConn;
-                objCmd.CommandType = CommandType.StoredProcedure;
-                objCmd.CommandText = "PR_ContactWiseContactCategory_InsertUserID";
+                foreach(var contactWiseContactCategory in contactWiseContactCategories)
+                {
+                    #region Create Command and Set Parameters
+                    SqlCommand objCmd = new SqlCommand();
+                    objCmd.Connection = objConn;
+                    objCmd.CommandType = CommandType.StoredProcedure;
+                    objCmd.CommandText = "PR_ContactWiseContactCategory_InsertUserID";
 
-                objCmd.Parameters.AddWithValue("@ContactID", entContactWiseContactCategory.ContactID);
-                objCmd.Parameters.AddWithValue("@ContactCategoryID", entContactWiseContactCategory.ContactCategoryID);
-                objCmd.Parameters.AddWithValue("@UserID", entContactWiseContactCategory.UserID);
-                objCmd.ExecuteNonQuery();
-                #endregion Create Command and Set Parameters
+                    objCmd.Parameters.AddWithValue("@ContactID", contactWiseContactCategory.ContactID);
+                    objCmd.Parameters.AddWithValue("@ContactCategoryID", contactWiseContactCategory.ContactCategoryID);
+                    objCmd.Parameters.AddWithValue("@UserID", contactWiseContactCategory.UserID);
+                    objCmd.ExecuteNonQuery();
+                    #endregion Create Command and Set Parameters
+                }
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();
@@ -225,7 +228,7 @@ namespace AddressBook.DAL
         #endregion Delete ContactWiseContactCategory By Id
 
         #region SelectOrNot
-        public ContactWiseContactCategoryENT SelectOrNot(SqlInt32 ContactID, SqlInt32 UserID)
+        public List<ContactWiseContactCategoryENT> SelectOrNot(SqlInt32 ContactID, SqlInt32 UserID)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -243,20 +246,22 @@ namespace AddressBook.DAL
                 SqlDataReader objSDR = objCmd.ExecuteReader();
                 #endregion Create Command and Set Parameters
 
-                ContactWiseContactCategoryENT entContactWiseContactCategory = new ContactWiseContactCategoryENT();
+                List<ContactWiseContactCategoryENT> contactWiseContactCategories = new List<ContactWiseContactCategoryENT>();
 
                 if (objSDR.HasRows)
                 {
                     while (objSDR.Read())
                     {
+                        ContactWiseContactCategoryENT entContactWiseContactCategory = new ContactWiseContactCategoryENT();
+
                         if (!objSDR["ContactCategoryID"].Equals(DBNull.Value))
                         {
                             entContactWiseContactCategory.ContactCategoryID = Convert.ToInt32(objSDR["ContactCategoryID"].ToString());
                         }
-                        if (!objSDR["ContactCategoryName"].Equals(DBNull.Value))
+                        /*if (!objSDR["ContactCategoryName"].Equals(DBNull.Value))
                         {
                             entContactWiseContactCategory.ContactCategory.ContactCategoryName = objSDR["ContactCategoryName"].ToString();
-                        }
+                        }*/
                         if (!objSDR["SelectOrNot"].Equals(DBNull.Value))
                         {
                             entContactWiseContactCategory.SelecteOrNot = objSDR["SelectOrNot"].ToString();
@@ -265,15 +270,16 @@ namespace AddressBook.DAL
                         {
                             entContactWiseContactCategory.ContactWiseContactCategoryID = Convert.ToInt32(objSDR["ContactWiseContactCategoryID"].ToString());
                         }
+
+                        contactWiseContactCategories.Add(entContactWiseContactCategory);
                     }
                 }
 
-                return entContactWiseContactCategory;
+                return contactWiseContactCategories;
 
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();
 
-                return entContactWiseContactCategory;
             }
             catch (Exception ex)
             {

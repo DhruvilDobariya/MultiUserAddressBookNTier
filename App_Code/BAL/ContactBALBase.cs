@@ -26,17 +26,18 @@ namespace AddressBook.BAL
 
         #region Insert
 
-        public bool Insert(ContactENT entContact)
+        public SqlInt32 Insert(ContactENT entContact)
         {
             ContactDAL ContactDAL = new ContactDAL();
-            if (ContactDAL.InsertContact(entContact))
+            SqlInt32 ContactId = ContactDAL.InsertContact(entContact);
+            if (ContactId > 0)
             {
-                return true;
+                return ContactId;
             }
             else
             {
                 this.Message = ContactDAL.Message;
-                return false;
+                return 0;
             }
         }
         #endregion Insert

@@ -188,7 +188,7 @@ namespace AddressBook.DAL
         #endregion Get Contact By Id
 
         #region Insert Contact
-        public bool InsertContact(ContactENT entContact)
+        public SqlInt32 InsertContact(ContactENT entContact)
         {
             #region Set Connection
             SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
@@ -218,25 +218,27 @@ namespace AddressBook.DAL
                 objCmd.Parameters.AddWithValue("@LinkedinID", entContact.LinkedinID);
                 objCmd.Parameters.AddWithValue("@Address", entContact.Address);
                 objCmd.Parameters.AddWithValue("@UserID", entContact.UserID);
+                objCmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Direction = ParameterDirection.Output;
                 objCmd.ExecuteNonQuery();
                 #endregion Create Command and Set Parameters
 
+                SqlInt32 ContactID = Convert.ToInt32(objCmd.Parameters["@ContactID"].Value);
+                return ContactID;
+
                 if (objConn.State == ConnectionState.Open)
                     objConn.Close();
-
-                return true;
             }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("The DELETE Contactment conflicted with the REFERENCE constraint"))
                 {
                     _Message = "This Contact contain some records, So please delete these record, If you want to delete this Contact.";
-                    return false;
+                    return 0;
                 }
                 else
                 {
                     _Message = ex.Message;
-                    return false;
+                    return 0;
                 }
             }
             finally

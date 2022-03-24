@@ -26,10 +26,10 @@ namespace AddressBook.BAL
 
         #region Insert
 
-        public bool Insert(ContactWiseContactCategoryENT entContactWiseContactCategory)
+        public bool Insert(List<ContactWiseContactCategoryENT> contactWiseContactCategories)
         {
             ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();
-            if (ContactWiseContactCategoryDAL.InsertContactWiseContactCategory(entContactWiseContactCategory))
+            if (ContactWiseContactCategoryDAL.InsertContactWiseContactCategory(contactWiseContactCategories))
             {
                 return true;
             }
@@ -80,5 +80,23 @@ namespace AddressBook.BAL
             }
         }
         #endregion Delete By PK
+
+        #region SelectOrNot
+        public List<ContactWiseContactCategoryENT> SelectOrNot(SqlInt32 ContactId, SqlInt32 UserId)
+        {
+            ContactWiseContactCategoryDAL contactWiseContactCategoryDAL= new ContactWiseContactCategoryDAL();
+            List<ContactWiseContactCategoryENT> contactWiseContactCategories = contactWiseContactCategoryDAL.SelectOrNot(ContactId, UserId);
+
+            if(contactWiseContactCategories != null)
+            {
+                return contactWiseContactCategories;
+            }
+            else
+            {
+                _Message = Message;
+                return null;
+            }
+        }
+        #endregion SelectOrNot
     }
 }
