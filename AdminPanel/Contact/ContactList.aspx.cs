@@ -42,28 +42,15 @@ public partial class AdminPanel_Contact_ContactList : System.Web.UI.Page
                 FillContact();
             }
         }
-        else if(e.CommandName == "DeleteImage")
-            {
-            if (e.CommandArgument != null)
-            {
-                DeleteContactImage(Convert.ToInt32(e.CommandArgument.ToString()));
-                FillContact();
-            }
-        }
     }
     #endregion GridView RowCommand
     #region Delete Contact
     private void DeleteContact(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
 
-        try
+        ContactBAL contactBAL = new ContactBAL();
+        if (contactBAL.Delete(Id, Convert.ToInt32(Session["UserID"])))
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
             DeleteContactCategory(Id);
 
             #region Delete Image
@@ -75,27 +62,13 @@ public partial class AdminPanel_Contact_ContactList : System.Web.UI.Page
             }
             #endregion Delete Image
 
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Contact_DeleteByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            
-            #endregion Create Command and Set Parameters
+            DeleteContactImage(Id);
 
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Success"] = "Contact deleted successfully";
         }
-        catch (Exception ex)
+        else
         {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactBAL.Message;
         }
     }
     #endregion Delete Contact
@@ -103,48 +76,10 @@ public partial class AdminPanel_Contact_ContactList : System.Web.UI.Page
     #region Delete Image
     private void DeleteContactImage(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-
-        try
+        ContactBAL contactBAL = new ContactBAL();
+        if (!contactBAL.DeleteImage(Id, Convert.ToInt32(Session["UserID"])))
         {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Set Parameters
-            SqlCommand objCmd = new SqlCommand("PR_Contact_DeleteImageByPKUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            FileInfo file = new FileInfo(Server.MapPath("~/UserContent/" + Id.ToString() + ".jpg"));
-
-            if (file.Exists)
-            {
-                file.Delete();
-                lblMsg.Text = "Image Deleted Successfully!";
-            }
-            else
-            {
-                lblMsg.Text = "Image dosen't upload!";
-            }
-
-            
-            #endregion Create Command and Set Parameters
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactBAL.Message;
         }
     }
     #endregion Delete Image
@@ -152,36 +87,10 @@ public partial class AdminPanel_Contact_ContactList : System.Web.UI.Page
     #region Delete Contact Category
     private void DeleteContactCategory(SqlInt32 Id)
     {
-
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
-        try
+        ContactWiseContactCategoryBAL contactWiseContactCategoryBAL = new ContactWiseContactCategoryBAL();
+        if (!contactWiseContactCategoryBAL.DeleteByCountryID(Id, Convert.ToInt32(Session["UserID"])))
         {
-
-
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            SqlCommand objCmd = new SqlCommand("PR_ContactWiseContactCategory_DeleteByContactIDUserID", objConn);
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.Parameters.AddWithValue("@ContactId", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            objCmd.ExecuteNonQuery();
-            lblMsg.Text = "Contact Deleted Successfully!";
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message + ex;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
+            Session["Error"] = contactWiseContactCategoryBAL.Message;
         }
     }
     #endregion Delete Contact Category
