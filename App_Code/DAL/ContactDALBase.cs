@@ -39,7 +39,7 @@ namespace AddressBook.DAL
                 SqlCommand objCmd = new SqlCommand();
                 objCmd.Connection = objConn;
                 objCmd.CommandType = CommandType.StoredProcedure;
-                objCmd.CommandText = "PR_Contact_SelectAllUserID";
+                objCmd.CommandText = "PR_ContactWiseContactCategory_SelectAll";
                 objCmd.Parameters.AddWithValue("@UserID", UserId);
 
                 SqlDataReader objSDR = objCmd.ExecuteReader();

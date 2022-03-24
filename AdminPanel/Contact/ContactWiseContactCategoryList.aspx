@@ -20,7 +20,7 @@
                 <Columns>
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" OnClientClick="return confirm('Are you sure, you want to delete contact wise contact category?');" CommandName="Delete" CommandArgument='<%# Eval("ContactWiseContactCategoryID").ToString() %>'>
+                            <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger" OnClientClick="return confirm('Are you sure, you want to delete contact wise contact category?');" CommandName="DeleteRecored" CommandArgument='<%# Eval("ContactWiseContactCategoryID").ToString() %>'>
                                 <i class="fas fa-trash-alt"></i>
                             </asp:LinkButton>
                         </ItemTemplate>

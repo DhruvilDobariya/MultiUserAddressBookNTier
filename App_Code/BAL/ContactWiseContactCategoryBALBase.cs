@@ -26,6 +26,24 @@ namespace AddressBook.BAL
 
         #region Insert
 
+        public DataTable SelectAll(SqlInt32 ContactId, SqlInt32 UserId)
+        {
+            ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();
+            DataTable dt = ContactWiseContactCategoryDAL.GetContactWiseContactCategories(ContactId, UserId);
+            if (dt != null)
+            {
+                return dt;
+            }
+            else
+            {
+                this.Message = ContactWiseContactCategoryDAL.Message;
+                return null;
+            }
+        }
+        #endregion Insert
+
+        #region Insert
+
         public bool Insert(List<ContactWiseContactCategoryENT> contactWiseContactCategories)
         {
             ContactWiseContactCategoryDAL ContactWiseContactCategoryDAL = new ContactWiseContactCategoryDAL();

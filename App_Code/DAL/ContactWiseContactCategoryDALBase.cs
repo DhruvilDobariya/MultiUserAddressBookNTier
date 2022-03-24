@@ -25,6 +25,50 @@ namespace AddressBook.DAL
         }
         #endregion Local Variable
 
+        #region Get ContactWiseContactCategories
+        public DataTable GetContactWiseContactCategories(SqlInt32 ContactId, SqlInt32 UserId)
+        {
+            #region Set Connection
+            SqlConnection objConn = new SqlConnection(DatabaseConfig.ConnectionString);
+            #endregion Set Connection
+            try
+            {
+                if (objConn.State != ConnectionState.Open)
+                    objConn.Open();
+                DataTable dt = new DataTable();
+                #region Create Command and Bind Data
+                SqlCommand objCmd = new SqlCommand();
+                objCmd.Connection = objConn;
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_ContactWiseContactCategory_SelectByContactIDUserID";
+                objCmd.Parameters.AddWithValue("@ContactID", ContactId);
+                objCmd.Parameters.AddWithValue("@UserID", UserId);
+
+                SqlDataReader objSDR = objCmd.ExecuteReader();
+
+                dt.Load(objSDR);
+
+                return dt;
+
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+
+                #endregion Create Command and Bind Data
+
+            }
+            catch (Exception ex)
+            {
+                _Message = ex.ToString();
+                return null;
+            }
+            finally
+            {
+                if (objConn.State == ConnectionState.Open)
+                    objConn.Close();
+            }
+        }
+        #endregion Get ContactWiseContactCategories
+
         #region Get ContactWiseContactCategory By ContactId
         public ContactWiseContactCategoryENT GetContactWiseContactCategoryById(SqlInt32 ContactID, SqlInt32 UserId)
         {

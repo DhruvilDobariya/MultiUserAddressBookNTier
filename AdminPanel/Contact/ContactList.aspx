@@ -39,13 +39,7 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField DataField="ContactName" HeaderText="Name" />
-                    <asp:TemplateField HeaderText="Contact Categories" ItemStyle-CssClass="text-center">
-                        <ItemTemplate>
-                            <asp:HyperLink runat="server" ID="hlContactWiseContactCategory" NavigateUrl='<%# "~/AdminPanel/Contact/" + Eval("ContactID").ToString().Trim() + "/ContactCategory" %>' CssClass="btn btn-gradient">
-                            <i class="fas fa-eye"></i>
-                            </asp:HyperLink>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <asp:BoundField DataField="ContactCategoryName" HeaderText="Contact Categories" />
                     <asp:BoundField DataField="CityName" HeaderText="City Name" />
                     <asp:BoundField DataField="StateName" HeaderText="State Name" />
                     <asp:BoundField DataField="CountryName" HeaderText="Country Name" />

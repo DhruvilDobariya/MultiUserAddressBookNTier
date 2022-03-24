@@ -29,49 +29,20 @@ public partial class AdminPanel_Contact_ContactWiseContactCategoryList : System.
     #region Fill Contact
     private void FillContactWiseContactCategory(SqlInt32 Id)
     {
-        #region Set Connection
-        SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["AddressBookConnectionString"].ConnectionString);
-        #endregion Set Connection
+        ContactWiseContactCategoryBAL contactWiseContactCategoryBAL = new ContactWiseContactCategoryBAL();
+        DataTable dt = contactWiseContactCategoryBAL.SelectAll(Id, Convert.ToInt32(Session["UserID"]));
 
-        try
-        {
-            if (objConn.State != ConnectionState.Open)
-                objConn.Open();
-
-            #region Create Command and Bind Data
-            SqlCommand objCmd = new SqlCommand();
-            objCmd.Connection = objConn;
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.CommandText = "PR_ContactWiseContactCategory_SelectByContactIDUserID";
-            objCmd.Parameters.AddWithValue("@ContactID", Id);
-            if (Session["UserID"] != null)
-                objCmd.Parameters.AddWithValue("@UserID", Convert.ToInt32(Session["UserID"]));
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            gvContactWiseContactCategory.DataSource = objSDR;
-            gvContactWiseContactCategory.DataBind();
-            #endregion Create Command and Bind Data
-
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
-        catch (Exception ex)
-        {
-            lblMsg.Text = ex.Message;
-        }
-        finally
-        {
-            if (objConn.State == ConnectionState.Open)
-                objConn.Close();
-        }
+        gvContactWiseContactCategory.DataSource = dt;
+        gvContactWiseContactCategory.DataBind();
     }
     #endregion Fill Contact
 
     #region GridViewRowCommand
     protected void gvContactWiseContactCategory_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName == "Delete")
+        if (e.CommandName == "DeleteRecored")
         {
-            if (e.CommandArgument != null)
+            if (e.CommandArgument != "")
             {
                 DeleteContactWiseContactCategory(Convert.ToInt32(e.CommandArgument.ToString()));
                 FillContactWiseContactCategory(Convert.ToInt32(RouteData.Values["ContactID"]));
